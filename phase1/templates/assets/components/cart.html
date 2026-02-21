@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body>
+        <header class="container mx-auto py-3 px-3">
+            <div
+                class="sm:flex sm:justify-between sm:items-center flex-row gap-3"
+            >
+                <div class="flex items-center gap-10">
+                    <div class="">
+                        <p class="font-bold">Dopamine.</p>
+                    </div>
+
+                    <ul class="flex gap-3">
+                        <li class="py-5 text-sm">
+                            <a
+                                href="/phase1/templates/shop.html"
+                                aria-current="page"
+                                class="aria-[current=page]:underline"
+                            >
+                                Shop
+                            </a>
+                        </li>
+                        <li class="py-5 text-sm">
+                            <a
+                                href="/phase1/templates/collections.html"
+                                class="aria-[current=page]:underline"
+                            >
+                                Collections
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <input
+                    type="text"
+                    class="border border-[#D9D9D9] rounded-xl px-3 py-5 w-full text-sm"
+                    placeholder="Search for products"
+                    id="search"
+                    name="search"
+                />
+
+                <div class="flex items-center gap-3">
+                    <button
+                        class="w-full sm:w-auto bg-[#F5F5F5] text-sm px-8 py-5 rounded-xl"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 16 16"
+                            fill="currentColor"
+                            class="size-4"
+                        >
+                            <path
+                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+                            />
+                        </svg>
+                    </button>
+
+                    <button
+                        class="w-full sm:w-auto bg-[#2B662D] text-sm px-8 py-5 rounded-xl"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 16 16"
+                            fill="white"
+                            class="size-4"
+                        >
+                            <path
+                                d="M1.75 1.002a.75.75 0 1 0 0 1.5h1.835l1.24 5.113A3.752 3.752 0 0 0 2 11.25c0 .414.336.75.75.75h10.5a.75.75 0 0 0 0-1.5H3.628A2.25 2.25 0 0 1 5.75 9h6.5a.75.75 0 0 0 .73-.578l.846-3.595a.75.75 0 0 0-.578-.906 44.118 44.118 0 0 0-7.996-.91l-.348-1.436a.75.75 0 0 0-.73-.573H1.75ZM5 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM13 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+                            />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main class="container mx-auto px-3 pb-14">
+            <div class="border-y border-[#EFEFEF] py-4 mt-4">
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center gap-2 font-semibold">
+                        <span>1. Zhrnutie objednávky</span>
+                        <span class="text-[#2B662D]">›</span>
+                    </div>
+                    <div class="text-[#8A8A8A] hidden sm:block">
+                        2. Kontaktné údaje
+                    </div>
+                    <div class="text-[#8A8A8A] hidden sm:block">
+                        3. Doprava a platba
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="mt-10 text-2xl font-semibold text-[#2B662D]">
+                Zhrnutie objednávky
+            </h2>
+
+            <div class="mt-6">
+                <div
+                    class="hidden md:grid grid-cols-[1fr_90px_120px_140px_40px] gap-4 border-b border-[#EFEFEF] pb-3 text-sm font-semibold text-[#333]"
+                >
+                    <div>Názov produktu</div>
+                    <div class="text-center">DPH</div>
+                    <div class="text-center">Cena za ks</div>
+                    <div class="text-center">Cena spolu</div>
+                    <div></div>
+                </div>
+
+                <div
+                    class="grid grid-cols-1 md:grid-cols-[1fr_90px_120px_140px_40px] gap-4 items-center py-5 border-b border-[#EFEFEF]"
+                    data-item
+                    data-price="15.20"
+                    data-vat="23"
+                >
+                    <div class="flex items-center gap-4">
+                        <img
+                            src="/phase1/templates/assets/img/nicolaus-10-0.png"
+                            alt="Nicolaus"
+                            class="w-14 h-14 object-contain rounded-lg bg-[#F6F6F6] p-2 border border-[#EEE]"
+                        />
+                        <div>
+                            <div class="font-semibold text-[#222]">
+                                Nicolaus Extra Jemná Vodka
+                                <span class="text-xs text-[#8A8A8A] font-medium"
+                                    >38% | 1l</span
+                                >
+                            </div>
+
+                            <div
+                                class="mt-2 grid grid-cols-2 gap-2 text-xs text-[#666] md:hidden"
+                            >
+                                <div>
+                                    DPH:
+                                    <span class="font-semibold text-[#333]"
+                                        ><span data-vat-label>23</span>%</span
+                                    >
+                                </div>
+                                <div>
+                                    Cena/ks:
+                                    <span class="font-semibold text-[#333]"
+                                        >€<span data-unit>15.20</span></span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="hidden md:block text-center text-sm text-[#333]"
+                    >
+                        <span data-vat-label>23</span>%
+                    </div>
+
+                    <div
+                        class="hidden md:block text-center text-sm text-[#333]"
+                    >
+                        €<span data-unit>15.20</span>
+                    </div>
+
+                    <div
+                        class="flex md:justify-center md:items-center gap-3 justify-between"
+                    >
+                        <div
+                            class="text-sm font-semibold text-[#333] md:hidden"
+                        >
+                            Cena spolu: €<span data-row-total>15.20</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <input
+                                type="number"
+                                min="1"
+                                value="1"
+                                class="w-16 rounded-md border border-[#D9D9D9] px-2 py-2 text-sm text-center"
+                                data-qty
+                            />
+                            <span class="text-sm text-[#666]">ks</span>
+                        </div>
+
+                        <div
+                            class="hidden md:block text-center text-sm font-semibold text-[#333]"
+                        >
+                            €<span data-row-total>15.20</span>
+                        </div>
+                    </div>
+
+                    <button
+                        class="justify-self-end text-red-500 text-xl leading-none hover:opacity-70"
+                        title="Remove"
+                        data-remove
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div class="w-full md:w-[420px] md:ml-auto">
+                    <div class="text-lg font-medium text-[#333]">Zhrnutie</div>
+
+                    <div
+                        class="mt-4 flex items-center justify-between text-sm text-[#333]"
+                    >
+                        <span class="text-[#666]">Spolu bez DPH</span>
+                        <span>€<span id="totalExVat">12.36</span></span>
+                    </div>
+
+                    <div
+                        class="mt-2 flex items-center justify-between text-sm text-[#2B662D] font-semibold"
+                    >
+                        <span>Spolu s DPH</span>
+                        <span>€<span id="totalIncVat">15.20</span></span>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <a
+                            href="checkout-contact.html"
+                            class="inline-flex items-center justify-center rounded-full bg-[#2B662D] px-6 py-3 text-white font-semibold hover:opacity-95"
+                        >
+                            Pokračovať k osobným údajom
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
