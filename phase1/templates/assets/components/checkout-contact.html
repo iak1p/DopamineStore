@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body>
+        <header class="container mx-auto py-3 px-3">
+            <div
+                class="sm:flex sm:justify-between sm:items-center flex-row gap-3"
+            >
+                <div class="flex items-center gap-10">
+                    <div class="">
+                        <p class="font-bold">Dopamine.</p>
+                    </div>
+
+                    <ul class="flex gap-3">
+                        <li class="py-5 text-sm">
+                            <a
+                                href="/phase1/templates/shop.html"
+                                aria-current="page"
+                                class="aria-[current=page]:underline"
+                            >
+                                Shop
+                            </a>
+                        </li>
+                        <li class="py-5 text-sm">
+                            <a
+                                href="/phase1/templates/collections.html"
+                                class="aria-[current=page]:underline"
+                            >
+                                Collections
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <input
+                    type="text"
+                    class="border border-[#D9D9D9] rounded-xl px-3 py-5 w-full text-sm"
+                    placeholder="Search for products"
+                    id="search"
+                    name="search"
+                />
+
+                <div class="flex items-center gap-3">
+                    <button
+                        class="w-full sm:w-auto bg-[#F5F5F5] text-sm px-8 py-5 rounded-xl"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 16 16"
+                            fill="currentColor"
+                            class="size-4"
+                        >
+                            <path
+                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+                            />
+                        </svg>
+                    </button>
+
+                    <button
+                        class="w-full sm:w-auto bg-[#2B662D] text-sm px-8 py-5 rounded-xl"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 16 16"
+                            fill="white"
+                            class="size-4"
+                        >
+                            <path
+                                d="M1.75 1.002a.75.75 0 1 0 0 1.5h1.835l1.24 5.113A3.752 3.752 0 0 0 2 11.25c0 .414.336.75.75.75h10.5a.75.75 0 0 0 0-1.5H3.628A2.25 2.25 0 0 1 5.75 9h6.5a.75.75 0 0 0 .73-.578l.846-3.595a.75.75 0 0 0-.578-.906 44.118 44.118 0 0 0-7.996-.91l-.348-1.436a.75.75 0 0 0-.73-.573H1.75ZM5 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM13 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+                            />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-3 pb-14">
+            <div class="border-y border-[#EFEFEF] py-4 mt-4">
+                <div class="flex items-center justify-between text-sm">
+                    <a href="cart.html" class="text-[#8A8A8A]"
+                        >1. Zhrnutie objednávky</a
+                    >
+                    <div class="flex items-center gap-2 font-semibold">
+                        <span>2. Kontaktné údaje</span>
+                        <span class="text-[#2B662D]">›</span>
+                    </div>
+                    <div class="text-[#8A8A8A] hidden sm:block">
+                        3. Doprava a platba
+                    </div>
+                </div>
+            </div>
+
+            <section class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div>
+                    <h2 class="text-2xl font-semibold text-[#2B662D]">
+                        Fakturačné údaje
+                    </h2>
+
+                    <div class="mt-8">
+                        <p class="text-sm font-semibold text-[#555]">
+                            Osobné údaje
+                        </p>
+
+                        <div class="mt-3">
+                            <input
+                                class="w-full rounded-md border border-[#D9D9D9] px-3 py-3 text-sm"
+                                placeholder="Meno a priezvisko *"
+                            />
+                        </div>
+
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <input
+                                class="w-full rounded-md border border-[#D9D9D9] px-3 py-3 text-sm"
+                                placeholder="Email *"
+                            />
+                            <input
+                                class="w-full rounded-md border border-[#D9D9D9] px-3 py-3 text-sm"
+                                placeholder="Tel. číslo *"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <p class="text-sm font-semibold text-[#555]">
+                            Doručovacia adresa
+                        </p>
+
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <select
+                                class="w-full rounded-md border border-[#D9D9D9] px-3 py-3 text-sm"
+                            >
+                                <option>Prešov</option>
+                                <option>Bratislava</option>
+                                <option>Košice</option>
+                            </select>
+
+                            <input
+                                class="w-full sm:col-span-2 rounded-md border border-[#D9D9D9] px-3 py-3 text-sm"
+                                placeholder="Ulica, popisné číslo *"
+                            />
+                        </div>
+
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <input
+                                class="w-full rounded-md border border-[#D9D9D9] px-3 py-3 text-sm"
+                                placeholder="PSČ *"
+                            />
+                            <input
+                                class="w-full rounded-md border border-[#D9D9D9] px-3 py-3 text-sm"
+                                value="Slovenská republika"
+                            />
+                        </div>
+
+                        <label
+                            class="mt-4 flex items-center gap-2 text-sm text-[#555]"
+                        >
+                            <input type="checkbox" class="accent-[#2B662D]" />
+                            Nakupujem na IČO
+                        </label>
+                    </div>
+
+                    <div class="mt-10">
+                        <p class="text-sm font-semibold text-[#555]">
+                            Účet pre budúce objednávky
+                        </p>
+
+                        <div
+                            class="mt-3 flex flex-col gap-3 text-sm text-[#555]"
+                        >
+                            <label class="flex items-center gap-2">
+                                <input
+                                    type="radio"
+                                    name="acc"
+                                    class="accent-[#2B662D]"
+                                />
+                                Vytvoriť účet pre rýchlejšie objednávky
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input
+                                    type="radio"
+                                    name="acc"
+                                    checked
+                                    class="accent-[#2B662D]"
+                                />
+                                Dnes nevytvárať účet
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-2xl font-semibold text-[#2B662D]">
+                        Informácie o objednávke
+                    </h2>
+
+                    <div class="mt-8">
+                        <p class="text-sm font-semibold text-[#555]">
+                            Poznámka
+                        </p>
+                        <textarea
+                            class="mt-3 w-full min-h-[120px] rounded-md border border-[#D9D9D9] px-3 py-3 text-sm"
+                        ></textarea>
+                    </div>
+
+                    <div class="mt-10">
+                        <p class="text-sm font-semibold text-[#555]">Platba</p>
+
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button
+                                class="rounded-xl border-2 border-[#2B662D] px-4 py-4 text-sm font-semibold text-[#2B662D] flex items-center justify-center gap-2"
+                            >
+                                💵 V hotovosti
+                            </button>
+                            <button
+                                class="rounded-xl border border-[#D9D9D9] px-4 py-4 text-sm font-semibold text-[#444] flex items-center justify-center gap-2"
+                            >
+                                💳 Platba kartou na mieste
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 flex justify-end">
+                        <a
+                            href="checkout-shipping.html"
+                            class="rounded-full bg-[#2B662D] px-6 py-3 text-white font-semibold"
+                        >
+                            Pokračovať k doprave
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>
