@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body class="font-[Manrope]">
+        <section class="mt-6">
+            <div class="flex flex-wrap items-center gap-2">
+                <button
+                    class="rounded-xl bg-[#F1F1F1] px-4 py-2 text-xs font-medium text-[#222]"
+                >
+                    All Products
+                </button>
+
+                <button
+                    class="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-medium text-[#222] border border-[#E6E6E6]"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-4"
+                    >
+                        <path
+                            d="M7 3a1 1 0 0 0-1 1v3.12a3 3 0 0 0-.88 2.12v9.76A3 3 0 0 0 8.12 22h7.76A3 3 0 0 0 19 19V9.24A3 3 0 0 0 18.12 7.12V4a1 1 0 0 0-1-1H7Zm2 4V5h6v2H9Zm-1 4h8v2H8v-2Z"
+                        />
+                    </svg>
+                    Vodka
+                </button>
+
+                <button
+                    class="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-medium text-[#222] border border-[#E6E6E6]"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-4"
+                    >
+                        <path
+                            d="M10 2a1 1 0 0 0-1 1v2.38a3 3 0 0 0-1 2.25V20a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7.63a3 3 0 0 0-1-2.25V3a1 1 0 0 0-1-1h-4Zm1 6h2v12h-2V8Z"
+                        />
+                    </svg>
+                    Whisky
+                </button>
+
+                <button
+                    class="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-medium text-[#222] border border-[#E6E6E6]"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-4"
+                    >
+                        <path
+                            d="M8 2a1 1 0 0 0-1 1v5.2a5 5 0 0 0 3 4.58V21a1 1 0 1 0 2 0v-8.22a5 5 0 0 0 3-4.58V3a1 1 0 0 0-1-1H8Zm1 2h6v4.2a3 3 0 0 1-6 0V4Z"
+                        />
+                    </svg>
+                    Tequila
+                </button>
+
+                <button
+                    class="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-medium text-[#222] border border-[#E6E6E6]"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-4"
+                    >
+                        <path
+                            d="M12 2a4 4 0 0 0-4 4v3.2a4 4 0 0 0-2 3.46V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-7.34a4 4 0 0 0-2-3.46V6a4 4 0 0 0-4-4Zm-2 4a2 2 0 1 1 4 0v2h-4V6Z"
+                        />
+                    </svg>
+                    Gin
+                </button>
+            </div>
+
+            <div
+                class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+            >
+                <!-- CARD -->
+                <article class="rounded-2xl bg-[#F6F6F6] p-6">
+                    <div class="flex justify-center h-40">
+                        <img
+                            src="/phase1/templates/assets/img/nicolaus-10-0.png"
+                            alt="Extra Fine"
+                            class="h-full w-auto object-contain"
+                        />
+                    </div>
+                    <div class="mt-4 text-center">
+                        <p class="text-sm font-semibold text-[#222]">
+                            Extra Fine
+                        </p>
+                        <p class="mt-1 text-xs text-[#9A9A9A]">
+                            Nicolaus vodka
+                        </p>
+                        <p class="mt-3 text-sm font-semibold text-[#222]">
+                            $12.49
+                        </p>
+                    </div>
+                </article>
+
+                <article class="rounded-2xl bg-[#F6F6F6] p-6">
+                    <div class="flex justify-center h-40">
+                        <img
+                            src="img/serum.png"
+                            alt="SERUM DE BEAUTE"
+                            class="h-full w-auto object-contain"
+                        />
+                    </div>
+                    <div class="mt-4 text-center">
+                        <p class="text-sm font-semibold text-[#222]">
+                            SERUM DE BEAUTE
+                        </p>
+                        <p class="mt-1 text-xs text-[#9A9A9A]">GUCCI</p>
+                        <p class="mt-3 text-sm font-semibold text-[#222]">
+                            $79.00
+                        </p>
+                    </div>
+                </article>
+
+                <article class="rounded-2xl bg-[#F6F6F6] p-6">
+                    <div class="flex justify-center h-40">
+                        <img
+                            src="img/lipstick.png"
+                            alt="POWERMATTE LIPSTICK"
+                            class="h-full w-auto object-contain"
+                        />
+                    </div>
+                    <div class="mt-4 text-center">
+                        <p class="text-sm font-semibold text-[#222]">
+                            POWERMATTE LIPSTICK
+                        </p>
+                        <p class="mt-1 text-xs text-[#9A9A9A]">NARS</p>
+                        <p class="mt-3 text-sm font-semibold text-[#222]">
+                            $50.00
+                        </p>
+                    </div>
+                </article>
+
+                <article class="rounded-2xl bg-[#F6F6F6] p-6">
+                    <div class="flex justify-center h-40">
+                        <img
+                            src="img/foundation.png"
+                            alt="WEIGHTLESS FOUNDATION"
+                            class="h-full w-auto object-contain"
+                        />
+                    </div>
+                    <div class="mt-4 text-center">
+                        <p class="text-sm font-semibold text-[#222]">
+                            WEIGHTLESS FOUNDATION
+                        </p>
+                        <p class="mt-1 text-xs text-[#9A9A9A]">BOBBI BROWN</p>
+                        <p class="mt-3 text-sm font-semibold text-[#222]">
+                            $99.99
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </body>
+</html>
