@@ -5,8 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
     </head>
-    <body>
+    <body class="font-[Manrope]">
         <header class="container mx-auto py-3 px-3">
             <div
                 class="sm:flex sm:justify-between sm:items-center flex-row gap-3"
@@ -112,20 +118,20 @@
                 <div
                     class="grid grid-cols-1 md:grid-cols-[1fr_90px_120px_140px_40px] gap-4 items-center py-5 border-b border-[#EFEFEF]"
                     data-item
-                    data-price="15.20"
-                    data-vat="23"
+                    data-price="3.90"
+                    data-vat="10"
                 >
                     <div class="flex items-center gap-4">
                         <img
-                            src="/phase1/templates/assets/img/nicolaus-10-0.png"
-                            alt="Nicolaus"
+                            src="/phase1/templates/assets/img/peach.png"
+                            alt="Peach"
                             class="w-14 h-14 object-contain rounded-lg bg-[#F6F6F6] p-2 border border-[#EEE]"
                         />
                         <div>
                             <div class="font-semibold text-[#222]">
-                                Nicolaus Extra Jemná Vodka
+                                Peach
                                 <span class="text-xs text-[#8A8A8A] font-medium"
-                                    >38% | 1l</span
+                                    >Stone fruit | 1 kg</span
                                 >
                             </div>
 
@@ -135,13 +141,13 @@
                                 <div>
                                     DPH:
                                     <span class="font-semibold text-[#333]"
-                                        ><span data-vat-label>23</span>%</span
+                                        ><span data-vat-label>10</span>%</span
                                     >
                                 </div>
                                 <div>
                                     Cena/ks:
                                     <span class="font-semibold text-[#333]"
-                                        >€<span data-unit>15.20</span></span
+                                        >€<span data-unit>3.90</span></span
                                     >
                                 </div>
                             </div>
@@ -151,13 +157,13 @@
                     <div
                         class="hidden md:block text-center text-sm text-[#333]"
                     >
-                        <span data-vat-label>23</span>%
+                        <span data-vat-label>10</span>%
                     </div>
 
                     <div
                         class="hidden md:block text-center text-sm text-[#333]"
                     >
-                        €<span data-unit>15.20</span>
+                        €<span data-unit>3.90</span>
                     </div>
 
                     <div
@@ -166,7 +172,7 @@
                         <div
                             class="text-sm font-semibold text-[#333] md:hidden"
                         >
-                            Cena spolu: €<span data-row-total>15.20</span>
+                            Cena spolu: €<span data-row-total>3.90</span>
                         </div>
 
                         <div class="flex items-center gap-2">
@@ -183,7 +189,7 @@
                         <div
                             class="hidden md:block text-center text-sm font-semibold text-[#333]"
                         >
-                            €<span data-row-total>15.20</span>
+                            €<span data-row-total>3.90</span>
                         </div>
                     </div>
 
@@ -197,20 +203,22 @@
                 </div>
 
                 <div class="w-full md:w-[420px] md:ml-auto">
-                    <div class="text-lg font-medium text-[#333]">Zhrnutie</div>
+                    <div class="text-lg font-medium text-[#333] mt-25">
+                        Zhrnutie
+                    </div>
 
                     <div
                         class="mt-4 flex items-center justify-between text-sm text-[#333]"
                     >
                         <span class="text-[#666]">Spolu bez DPH</span>
-                        <span>€<span id="totalExVat">12.36</span></span>
+                        <span>€<span id="totalExVat">3.54</span></span>
                     </div>
 
                     <div
                         class="mt-2 flex items-center justify-between text-sm text-[#2B662D] font-semibold"
                     >
                         <span>Spolu s DPH</span>
-                        <span>€<span id="totalIncVat">15.20</span></span>
+                        <span>€<span id="totalIncVat">3.90</span></span>
                     </div>
 
                     <div class="mt-8 flex justify-end">
