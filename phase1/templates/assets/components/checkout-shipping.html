@@ -166,6 +166,22 @@
                         </div>
                     </div>
                 </button>
+                <div class="mt-10 lg:col-span-2">
+                    <p class="text-sm font-semibold text-[#555]">Platba</p>
+
+                    <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button
+                            class="rounded-xl border-2 border-[#2B662D] px-4 py-4 text-sm font-semibold text-[#2B662D] flex items-center justify-center gap-2"
+                        >
+                            💵 V hotovosti na mieste
+                        </button>
+                        <button
+                            class="rounded-xl border border-[#D9D9D9] px-4 py-4 text-sm font-semibold text-[#444] flex items-center justify-center gap-2"
+                        >
+                            💳 Platba kartou
+                        </button>
+                    </div>
+                </div>
             </section>
 
             <h2 class="mt-12 text-2xl font-semibold text-[#2B662D]">
@@ -178,29 +194,36 @@
                 >
                     <div>Názov produktu</div>
                     <div class="text-center">DPH %</div>
-                    <div class="text-center">Cena za ks</div>
-                    <div class="text-center">Počet ks</div>
+                    <div class="text-center">Cena za ks/kg</div>
+                    <div class="text-center">Počet ks/kg</div>
                     <div class="text-center">Cena spolu</div>
                 </div>
 
                 <div
                     class="grid grid-cols-1 md:grid-cols-[1fr_90px_120px_120px_140px] gap-4 items-center py-5 border-b border-[#EFEFEF]"
                 >
-                    <div class="text-[#222] font-semibold">
-                        Nicolaus Extra Jemná Vodka
+                    <div
+                        class="text-[#222] font-semibold flex items-center gap-3"
+                    >
+                        <img
+                            src="/phase1/templates/assets/img/peach.png"
+                            alt="Peach"
+                            class="w-14 h-14 object-contain rounded-lg bg-[#F6F6F6] p-2 border border-[#EEE]"
+                        />
+                        Peach
                         <span class="text-xs text-[#8A8A8A] font-medium"
-                            >38% | 1l</span
+                            >Stone fruit | 1 kg</span
                         >
                     </div>
-                    <div class="hidden md:block text-center text-sm">23%</div>
+                    <div class="hidden md:block text-center text-sm">10%</div>
                     <div class="hidden md:block text-center text-sm">
-                        15.20 €
+                        3.90 €
                     </div>
-                    <div class="hidden md:block text-center text-sm">1 ks</div>
+                    <div class="hidden md:block text-center text-sm">1 kg</div>
                     <div
                         class="hidden md:block text-center text-sm font-semibold"
                     >
-                        15.20 €
+                        3.90 €
                     </div>
 
                     <div
@@ -208,12 +231,12 @@
                     >
                         <div>
                             DPH:
-                            <span class="font-semibold text-[#333]">23%</span>
+                            <span class="font-semibold text-[#333]">10%</span>
                         </div>
                         <div>
                             Cena/ks:
                             <span class="font-semibold text-[#333]"
-                                >15.20 €</span
+                                >3.90 €</span
                             >
                         </div>
                         <div>
@@ -223,24 +246,72 @@
                         <div>
                             Spolu:
                             <span class="font-semibold text-[#333]"
-                                >15.20 €</span
+                                >3.90 €</span
                             >
                         </div>
                     </div>
                 </div>
+                <div
+                    class="grid grid-cols-1 md:grid-cols-[1fr_90px_120px_120px_140px] gap-4 items-center py-5 border-b border-[#EFEFEF]"
+                >
+                    <div
+                        class="text-[#222] font-semibold flex items-center gap-3"
+                    >
+                        <img
+                            src="/phase1/templates/assets/img/dragon-fruit.png"
+                            alt="Peach"
+                            class="w-14 h-14 object-contain rounded-lg bg-[#F6F6F6] p-2 border border-[#EEE]"
+                        />
+                        Dragon fruit
+                        <span class="text-xs text-[#8A8A8A] font-medium"
+                            >Exotic fruit | 1 pc</span
+                        >
+                    </div>
+                    <div class="hidden md:block text-center text-sm">10%</div>
+                    <div class="hidden md:block text-center text-sm">
+                        5.50 €
+                    </div>
+                    <div class="hidden md:block text-center text-sm">2 ks</div>
+                    <div
+                        class="hidden md:block text-center text-sm font-semibold"
+                    >
+                        10.00 €
+                    </div>
 
+                    <div
+                        class="md:hidden grid grid-cols-2 gap-2 text-xs text-[#666]"
+                    >
+                        <div>
+                            DPH:
+                            <span class="font-semibold text-[#333]">10%</span>
+                        </div>
+                        <div>
+                            Cena/ks:
+                            <span class="font-semibold text-[#333]"
+                                >5.50 €</span
+                            >
+                        </div>
+                        <div>
+                            Počet:
+                            <span class="font-semibold text-[#333]">1 ks</span>
+                        </div>
+                        <div>
+                            Spolu:
+                            <span class="font-semibold text-[#333]"
+                                >10.00 €</span
+                            >
+                        </div>
+                    </div>
+                </div>
                 <div class="mt-8 flex items-start justify-between">
                     <label class="flex items-center gap-2 text-sm text-[#555]">
-                        <input type="checkbox" class="accent-[#2B662D]" />
-                        Máte viac ako 18 rokov?
                     </label>
-
                     <div class="text-right">
                         <div class="text-sm text-[#333]">
-                            12.36 € <span class="text-[#8A8A8A]">bez DPH</span>
+                            12.51 € <span class="text-[#8A8A8A]">bez DPH</span>
                         </div>
                         <div class="mt-1 text-sm font-semibold text-[#2B662D]">
-                            15.20 €
+                            13.90 €
                             <span class="text-[#8A8A8A] font-medium"
                                 >s DPH</span
                             >
@@ -249,7 +320,6 @@
                 </div>
 
                 <div class="mt-10 flex items-center justify-between">
-                    <p>POSOSI</p>
                     <button
                         class="rounded-full bg-[#2B662D] px-6 py-3 text-white font-semibold md:ml-auto"
                     >
