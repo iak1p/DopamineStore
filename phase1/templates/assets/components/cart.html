@@ -88,30 +88,30 @@
             <div class="border-y border-[#EFEFEF] py-4 mt-4">
                 <div class="flex items-center justify-between text-sm">
                     <div class="flex items-center gap-2 font-semibold">
-                        <span>1. Zhrnutie objednávky</span>
+                        <span>1. Order Summary</span>
                         <span class="text-[#2B662D]">›</span>
                     </div>
                     <div class="text-[#8A8A8A] hidden sm:block">
-                        2. Kontaktné údaje
+                        2. Contact Information
                     </div>
                     <div class="text-[#8A8A8A] hidden sm:block">
-                        3. Doprava a platba
+                        3. Shipping and Payment
                     </div>
                 </div>
             </div>
 
             <h2 class="mt-10 text-2xl font-semibold text-[#2B662D]">
-                Zhrnutie objednávky
+                Order Summary
             </h2>
 
             <div class="mt-6">
                 <div
                     class="hidden md:grid grid-cols-[1fr_90px_120px_140px_40px] gap-4 border-b border-[#EFEFEF] pb-3 text-sm font-semibold text-[#333]"
                 >
-                    <div>Názov produktu</div>
+                    <div>Product Name</div>
                     <div class="text-center">DPH</div>
-                    <div class="text-center">Cena za ks</div>
-                    <div class="text-center">Cena spolu</div>
+                    <div class="text-center">Price per kg</div>
+                    <div class="text-center">Total price</div>
                     <div></div>
                 </div>
 
@@ -145,7 +145,7 @@
                                     >
                                 </div>
                                 <div>
-                                    Cena/ks:
+                                    Price per item:
                                     <span class="font-semibold text-[#333]"
                                         >€<span data-unit>3.90</span></span
                                     >
@@ -172,7 +172,7 @@
                         <div
                             class="text-sm font-semibold text-[#333] md:hidden"
                         >
-                            Cena spolu: €<span data-row-total>3.90</span>
+                            Total price: €<span data-row-total>3.90</span>
                         </div>
 
                         <div class="flex items-center gap-2">
@@ -204,20 +204,20 @@
 
                 <div class="w-full md:w-[420px] md:ml-auto">
                     <div class="text-lg font-medium text-[#333] mt-25">
-                        Zhrnutie
+                        Summary
                     </div>
 
                     <div
                         class="mt-4 flex items-center justify-between text-sm text-[#333]"
                     >
-                        <span class="text-[#666]">Spolu bez DPH</span>
+                        <span class="text-[#666]">Total (excluding DPH)</span>
                         <span>€<span id="totalExVat">3.54</span></span>
                     </div>
 
                     <div
                         class="mt-2 flex items-center justify-between text-sm text-[#2B662D] font-semibold"
                     >
-                        <span>Spolu s DPH</span>
+                        <span>Including DPH</span>
                         <span>€<span id="totalIncVat">3.90</span></span>
                     </div>
 
@@ -226,7 +226,7 @@
                             href="checkout-contact.html"
                             class="inline-flex items-center justify-center rounded-full bg-[#2B662D] px-6 py-3 text-white font-semibold hover:opacity-95"
                         >
-                            Pokračovať k osobným údajom
+                            Continue to personal information
                         </a>
                     </div>
                 </div>
