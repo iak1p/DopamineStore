@@ -47,7 +47,7 @@
                     </a>
 
                     @foreach ($categories as $category)
-                        <a href="{{ route('shop', ['category' => $category['slug']]) }}"
+                        <a href="{{ route('shop', ['category' => lcfirst($category['slug'])]) }}"
                             class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-medium transition
                                     {{ $selectedCategory === $category['slug']
                                         ? 'bg-[#F1F1F1] text-[#222] border border-[#E6E6E6]'
@@ -125,8 +125,7 @@
                 <div id="productsGrid"
                     class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($products as $product)
-                        <x-product-card :name="$product['name']" :price="$product['price']" :description="$product['description']"
-                            :link="$product['link']" />
+                        <x-product-card :product="$product" />
                     @endforeach
                 </div>
             @endif

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ShopController extends Controller
 {
@@ -64,15 +64,15 @@ class ShopController extends Controller
         }
 
         $categories = [
-            ['slug' => 'stone-fruits', 'name' => 'Stone fruits'],
-            ['slug' => 'exotic-fruits', 'name' => 'Exotic fruits'],
-            ['slug' => 'citrus-fruits', 'name' => 'Citrus fruits'],
-            ['slug' => 'pome-fruits', 'name' => 'Pome fruits'],
+            ['slug' => 'stone', 'name' => 'Stone fruits'],
+            ['slug' => 'exotic', 'name' => 'Exotic fruits'],
+            ['slug' => 'citrus', 'name' => 'Citrus fruits'],
+            ['slug' => 'pome', 'name' => 'Pome fruits'],
             ['slug' => 'boxes', 'name' => 'Boxes'],
         ];
 
         return view('shop', compact('products', 'categories', 'selectedCategory'));
-        
+
 
         // return view('shop', compact('products'));
     }
