@@ -15,6 +15,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedInteger('stock')->default(0);
             $table->string('category')->nullable();
+            $table->string('url');
+            $table->string('slug');
             $table->timestamps();
         });
     }
