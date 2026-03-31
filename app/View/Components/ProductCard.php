@@ -9,22 +9,19 @@ use Illuminate\View\Component;
 
 class ProductCard extends Component
 {
-    /**
-     * Create a new component instance.
-     */
     public $name;
     public $price;
+    public $description;
+    public $link;
 
-    public function __construct($name, $price)
+    public function __construct($name, $price, $description, $link)
     {
-        //
         $this->name = $name;
         $this->price = $price;
+        $this->description = $description;
+        $this->link = $link;
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
     public function render(): View|Closure|string
     {
         return view('components.product-card');

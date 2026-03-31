@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ShopController extends Controller
+class ProductController extends Controller
 {
-    public function index(Request $request)
-    {
-        $selectedCategory = $request->query('category');
-        $sort = $request->query('sort');
 
+    public function show($name)
+    {
         $products = collect([
             [
                 'name' => 'Orange',
@@ -50,24 +48,12 @@ class ShopController extends Controller
             ],
         ]);
 
-        if ($selectedCategory) {
-            $products = $products->where('category', $selectedCategory);
+        $product = $products->firstWhere('name', ucfirst($name));
+
+        if (!$product) {
+            abort(404);
         }
 
-        if ($sort === 'price_asc') {
-            $products = $products->sortBy('price');
-        } elseif ($sort === 'price_desc') {
-            $products = $products->sortByDesc('price');
-        }
-
-        $categories = [
-            ['slug' => 'stone-fruits', 'name' => 'Stone fruits'],
-            ['slug' => 'exotic-fruits', 'name' => 'Exotic fruits'],
-            ['slug' => 'citrus-fruits', 'name' => 'Citrus fruits'],
-            ['slug' => 'pome-fruits', 'name' => 'Pome fruits'],
-            ['slug' => 'boxes', 'name' => 'Boxes'],
-        ];
-
-        return view('shop', compact('products', 'categories', 'selectedCategory'));
+        return view('product', compact('product'));
     }
 }
