@@ -2,24 +2,18 @@
 
 namespace App\View\Components;
 
+use App\Models\Product;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-
 class ProductCard extends Component
 {
-    public $name;
-    public $price;
-    public $description;
-    public $link;
+    public Product $product;
 
-    public function __construct($name, $price, $description, $link)
+    public function __construct(Product $product)
     {
-        $this->name = $name;
-        $this->price = $price;
-        $this->description = $description;
-        $this->link = $link;
+        $this->product = $product;
     }
 
     public function render(): View|Closure|string
