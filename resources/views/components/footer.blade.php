@@ -14,13 +14,13 @@
                     <a href="{{ url('/home') }}" class="hover:text-white transition">Home</a>
                 </li>
                 <li>
-                    <a href="{{ url('/shop') }}" class="hover:text-white transition">Shop</a>
+                    <a href="{{ route('shop') }}" class="hover:text-white transition">Shop</a>
                 </li>
                 <li>
                     <a href="{{ url('/login') }}" class="hover:text-white transition">Login</a>
                 </li>
                 <li>
-                    <a href="{{ url('/cart') }}" class="hover:text-white transition">Cart</a>
+                    <a href="{{ route('cart') }}" class="hover:text-white transition">Cart</a>
                 </li>
             </ul>
         </div>
