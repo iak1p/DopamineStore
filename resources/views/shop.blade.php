@@ -130,18 +130,25 @@
                 </div>
             @endif
 
-
             <div class="mt-8 flex items-center justify-center gap-2" id="pagination">
-                <button class="rounded-lg border border-[#E6E6E6] px-3 py-2 text-xs cursor-pointer"
-                    id="prevPage">
+
+                <a href="{{ $products->previousPageUrl() }}"
+                    class="rounded-lg border border-[#E6E6E6] px-3 py-2 text-xs cursor-pointer
+                    {{ $products->onFirstPage() ? 'opacity-50 pointer-events-none' : '' }}">
                     Prev
-                </button>
-                <span class="text-xs text-[#666]">Page <b id="pageNum">1</b> /
-                    <b id="pageTotal">1</b></span>
-                <button class="rounded-lg border border-[#E6E6E6] px-3 py-2 text-xs cursor-pointers"
-                    id="nextPage">
+                </a>
+
+                <span class="text-xs text-[#666]">
+                    Page <b>{{ $products->currentPage() }}</b> /
+                    <b>{{ $products->lastPage() }}</b>
+                </span>
+
+                <a href="{{ $products->nextPageUrl() }}"
+                    class="rounded-lg border border-[#E6E6E6] px-3 py-2 text-xs cursor-pointer
+                    {{ !$products->hasMorePages() ? 'opacity-50 pointer-events-none' : '' }}">
                     Next
-                </button>
+                </a>
+
             </div>
         </section>
     </main>

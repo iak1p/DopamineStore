@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->string('url');
             $table->string('slug');
+            $table->enum('unit', ['kg', 'pcs']);
             $table->timestamps();
         });
     }

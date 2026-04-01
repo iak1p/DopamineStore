@@ -14,7 +14,8 @@ class Product extends Model
         'stock',
         'category',
         'url',
-        'slug'
+        'slug',
+        'unit'
     ];
 
     public function images(): HasMany
