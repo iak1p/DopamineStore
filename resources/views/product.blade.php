@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,8 +7,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
-        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
 </head>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -72,9 +73,7 @@
                         {{ $product['unit'] }}</span>
                 </h1>
 
-                <p class="mt-1 text-sm text-[#2B662D]">
-                    Premium seasonal selection
-                </p>
+                <p class="mt-1 text-sm text-[#2B662D]">Premium seasonal selection</p>
 
                 <div class="mt-6">
                     <p class="text-3xl font-semibold text-[#2B662D]">
@@ -103,30 +102,27 @@
 
                 <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
                     <div
-                        class="flex w-full items-center justify-between rounded-full border border-[#E6E6E6] bg-white px-3 py-2 sm:w-35">
-                        <button class="h-8 w-8 rounded-full hover:bg-[#F6F6F6]">
-                            −
-                        </button>
+                        class="flex w-full items-center justify-between rounded-full border border-[#E6E6E6] bg-white px-3 py-2 sm:w-35"
+                    >
+                        <button class="h-8 w-8 rounded-full hover:bg-[#F6F6F6]">−</button>
                         <span class="text-sm font-semibold">1</span>
-                        <button class="h-8 w-8 rounded-full hover:bg-[#F6F6F6]">
-                            +
-                        </button>
+                        <button class="h-8 w-8 rounded-full hover:bg-[#F6F6F6]">+</button>
                     </div>
 
                     <button
-                        class="w-full rounded-full bg-[#2B662D] px-6 py-3 font-semibold text-white sm:w-auto">
+                        class="w-full rounded-full bg-[#2B662D] px-6 py-3 font-semibold text-white sm:w-auto"
+                    >
                         Add to cart
                     </button>
 
-                    <button
-                        class="w-full rounded-full border border-[#CFCFCF] px-6 py-3 font-semibold text-[#444] sm:w-auto">
-                        Order now
-                    </button>
+                    <form action="{{ route('cart.add', $product) }}" method="POST">
+                        @csrf
+                        <button type="submit">Order now</button>
+                    </form>
                 </div>
             </div>
         </section>
     </main>
     <x-footer />
 </body>
-
 </html>
