@@ -74,43 +74,7 @@
         $grandTotal = $cartTotalIncVat + $selectedDeliveryPrice;
     @endphp
 
-    <header class="container mx-auto px-3 py-3">
-        <div class="flex-row gap-3 sm:flex sm:items-center sm:justify-between">
-            <div class="flex items-center gap-10">
-                <div>
-                    <p class="font-bold">Dopamine.</p>
-                </div>
-
-                <ul class="flex gap-3">
-                    <li class="py-5 text-sm">
-                        <a href="{{ route('shop') }}" aria-current="page" class="aria-[current=page]:underline">
-                            Shop
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <input type="text" class="w-full rounded-xl border border-[#D9D9D9] px-3 py-5 text-sm"
-                placeholder="Search for products" id="search" name="search" />
-
-            <div class="flex items-center gap-3">
-                <button class="w-full rounded-xl bg-[#F5F5F5] px-8 py-5 text-sm sm:w-auto" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                        <path
-                            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-                    </svg>
-                </button>
-
-                <a href="{{ route('cart') }}"
-                    class="inline-flex w-full items-center justify-center rounded-xl bg-[#2B662D] px-8 py-5 text-sm sm:w-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="white" class="size-4">
-                        <path
-                            d="M1.75 1.002a.75.75 0 1 0 0 1.5h1.835l1.24 5.113A3.752 3.752 0 0 0 2 11.25c0 .414.336.75.75.75h10.5a.75.75 0 0 0 0-1.5H3.628A2.25 2.25 0 0 1 5.75 9h6.5a.75.75 0 0 0 .73-.578l.846-3.595a.75.75 0 0 0-.578-.906 44.118 44.118 0 0 0-7.996-.91l-.348-1.436a.75.75 0 0 0-.73-.573H1.75ZM5 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM13 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </header>
+    <x-header />
 
     <main class="container mx-auto px-3 pb-14">
         <div class="mt-4 border-y border-[#EFEFEF] py-4">

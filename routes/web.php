@@ -30,10 +30,7 @@ Route::patch('/cart/items/{item}/increase', [CartController::class, 'increase'])
 
 Route::get('/checkout/contact', [CheckoutController::class, 'contact'])->name('checkout.contact');
 Route::post('/checkout/contact', [CheckoutController::class, 'storeContact'])->name('checkout.contact.store');
-
 Route::get('/checkout/shipping', [CheckoutController::class, 'shipping'])->name('checkout.shipping');
-Route::post('/checkout/submit', [CheckoutController::class, 'submit'])->name('checkout.submit');
-
 Route::post('/checkout/submit', [CheckoutController::class, 'submit'])->name('checkout.submit');
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 
