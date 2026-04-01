@@ -12,17 +12,28 @@
         rel="stylesheet"
     />
 </head>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainImage = document.getElementById('mainProductImage');
+        const thumbs = document.querySelectorAll('.product-thumb');
+
+        thumbs.forEach(function(thumb) {
+            thumb.addEventListener('click', function() {
+                const newImage = this.dataset.image;
+                mainImage.src = newImage;
+            });
+        });
+    });
+</script>
 
 <body class="font-[Manrope]">
     <x-header />
 
     <main class="container mx-auto px-3 pb-12">
         <nav class="mt-6 text-sm text-[#8A8A8A]">
-            <a
-                href="{{ route('shop', ['category' => $product['category']]) }}"
-                class="hover:underline"
-                >{{ ucfirst(implode(' ', explode('-', $product['category']))) }}</a
-            >
+            <a href="{{ route('shop', ['category' => $product['category']]) }}"
+                class="hover:underline">{{ ucfirst(implode(' ', explode('-', $product['category']))) }}
+                Fruit</a>
             <span class="mx-2">›</span>
             <span class="text-[#111]">{{ $product['name'] }}</span>
         </nav>
@@ -30,61 +41,63 @@
         <section class="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-2">
             <div class="flex gap-6">
                 <div class="hidden flex-col gap-3 sm:flex">
-                    <button class="h-16 w-16 rounded-xl border border-[#EAEAEA] bg-[#F6F6F6] p-2">
-                        <img
-                            src="/phase1/templates/assets/img/peach.png"
-                            class="h-full w-full object-contain"
-                            alt="Peach thumbnail"
-                        />
-                    </button>
-                    <button class="h-16 w-16 rounded-xl border border-[#EAEAEA] bg-[#F6F6F6] p-2">
-                        <img
-                            src="/phase1/templates/assets/img/peach.png"
-                            class="h-full w-full object-contain"
-                            alt="Peach thumbnail"
-                        />
-                    </button>
+                    @foreach ($product['images'] as $image)
+                        <button type="button"
+                            data-image="{{ asset('storage/' . $image['image_path']) }}"
+                            class="product-thumb h-16 w-16 rounded-xl border border-[#EAEAEA] bg-[#F6F6F6] p-2 cursor-pointer">
+                            <img src="{{ asset('storage/' . $image['image_path']) }}"
+                                class="h-full w-full object-contain" alt="{{ $product['name'] }}" />
+                        </button>
+                    @endforeach
                 </div>
 
                 <div
-                    class="flex min-h-105 flex-1 items-center justify-center rounded-2xl border border-[#EEEEEE] bg-white p-6"
-                >
-                    <img
-                        src="/phase1/templates/assets/img/peach.png"
-                        alt="Peach"
-                        class="max-h-130 w-auto object-contain"
-                    />
+                    class="flex min-h-105 flex-1 items-center justify-center rounded-2xl border border-[#EEEEEE] bg-white p-6 
+                        {{ $product->stock <= 0 ? 'opacity-70' : '' }} relative">
+                    @if ($product->stock <= 0)
+                        <span
+                            class="absolute left-3 top-3 rounded-full bg-[#FFF0F0] px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#C62828]">
+                            Sold out
+                        </span>
+                    @endif
+                    <img id="mainProductImage"
+                        src="{{ asset('storage/' . $product['images'][0]['image_path']) }}"
+                        alt="Peach" class="max-h-130 w-auto object-contain" />
                 </div>
             </div>
 
             <div>
                 <h1 class="text-3xl font-semibold tracking-tight text-[#111] sm:text-4xl">
                     {{ $product['name'] }}
-                    <span
-                        class="ml-2 text-sm font-medium text-[#8A8A8A]"
-                        >{{ $product['description'] }}</span
-                    >
+                    <span class="ml-2 text-sm font-medium text-[#8A8A8A]">Fresh fruit | 1
+                        {{ $product['unit'] }}</span>
                 </h1>
 
                 <p class="mt-1 text-sm text-[#2B662D]">Premium seasonal selection</p>
 
                 <div class="mt-6">
                     <p class="text-3xl font-semibold text-[#2B662D]">
-                        €{{ $product['price'] }}
+                        {{ $product['price'] }} €
                         <span class="text-sm font-medium text-[#8A8A8A]">with DPH</span>
                     </p>
-                    <p class="mt-1 text-sm text-[#9A9A9A]">Unit price: 3.90 € per 1 kg</p>
+                    <p class="mt-1 text-sm text-[#9A9A9A]">
+                        Unit price: {{ $product['price'] }} € per 1 {{ $product['unit'] }}
+                    </p>
                 </div>
 
-                <p class="mt-6 max-w-xl text-sm leading-7 text-[#4A4A4A]">Sweet, juicy and carefully selected peaches with a delicate aroma and soft texture. Ideal for everyday snacking, desserts, smoothies or fruit salads.</p>
+                <p class="mt-6 max-w-xl text-sm leading-7 text-[#4A4A4A]">
+                    {{ $product['description'] }}
+                </p>
 
                 <p class="mt-4 text-sm text-[#4A4A4A]">
-                    <span class="font-semibold">Ingredients:</span> 100% fresh peaches
+                    <span class="font-semibold">Ingredients:</span> 100%
+                    fresh {{ strtolower($product['name']) }}
                 </p>
 
                 <div class="mt-8 text-sm text-[#4A4A4A]">
                     Available quantity
-                    <span class="font-semibold text-[#111]">12 kg</span>
+                    <span class="font-semibold text-[#111]">{{ $product['stock'] }}
+                        {{ $product['unit'] }}</span>
                 </div>
 
                 <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">

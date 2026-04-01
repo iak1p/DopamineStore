@@ -19,9 +19,10 @@
             <div class="mt-4 text-center">
                 <p class="text-sm font-semibold text-[#111]">
                     {{ $product->images->first()->alt_text ?? $product->name }}</p>
-                <p class="mt-1 text-xs text-[#9A9A9A]">{{ $product->category }} fruit • 1 kg</p>
+                <p class="mt-1 text-xs text-[#9A9A9A]">{{ ucfirst($product->category) }} fruit • 1
+                    {{ $product->unit }}</p>
                 <p class="mt-3 text-sm font-semibold text-[#111]">
-                    €{{ number_format($product->price, 2, ',', '') }}</p>
+                    {{ $product->price }} €</p>
             </div>
         </a>
     </div>

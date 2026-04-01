@@ -174,13 +174,47 @@
                         Next
                     </button>
                 </div>
-            </section>
-        </main>
-        <x-footer />
-    </body>
-    <script>
-        document.getElementById('sort-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-        });
-    </script>
+            </div>
+
+            @if (count($products) == 0)
+                <p class="text-center">No items</p>
+            @else
+                <div id="productsGrid"
+                    class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach ($products as $product)
+                        <x-product-card :product="$product" />
+                    @endforeach
+                </div>
+            @endif
+
+            <div class="mt-8 flex items-center justify-center gap-2" id="pagination">
+
+                <a href="{{ $products->previousPageUrl() }}"
+                    class="rounded-lg border border-[#E6E6E6] px-3 py-2 text-xs cursor-pointer
+                    {{ $products->onFirstPage() ? 'opacity-50 pointer-events-none' : '' }}">
+                    Prev
+                </a>
+
+                <span class="text-xs text-[#666]">
+                    Page <b>{{ $products->currentPage() }}</b> /
+                    <b>{{ $products->lastPage() }}</b>
+                </span>
+
+                <a href="{{ $products->nextPageUrl() }}"
+                    class="rounded-lg border border-[#E6E6E6] px-3 py-2 text-xs cursor-pointer
+                    {{ !$products->hasMorePages() ? 'opacity-50 pointer-events-none' : '' }}">
+                    Next
+                </a>
+
+            </div>
+        </section>
+    </main>
+    <x-footer />
+</body>
+<script>
+    document.getElementById('sort-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+    });
+</script>
+
 </html>
