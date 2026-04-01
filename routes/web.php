@@ -25,6 +25,8 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/cart/item/{cartItem}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/item/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+Route::patch('/cart/items/{item}/decrease', [CartController::class, 'decrease'])->name('cart.decrease');
+Route::patch('/cart/items/{item}/increase', [CartController::class, 'increase'])->name('cart.increase');
 
 Route::get('/checkout/contact', [CheckoutController::class, 'contact'])->name('checkout.contact');
 Route::post('/checkout/contact', [CheckoutController::class, 'storeContact'])->name('checkout.contact.store');
