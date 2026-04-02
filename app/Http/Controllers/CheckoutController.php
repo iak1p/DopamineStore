@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
@@ -41,8 +43,9 @@ class CheckoutController extends Controller
             $rules['create_account'] = ['required', 'boolean'];
         }
 
-        if (!Auth::id() && $request->input('create_account') == '1') {
+       if (!Auth::id() && $request->input('create_account') == '1') {
             $rules['password'] = ['required', 'string', 'min:1', 'confirmed'];
+            $rules['email'] = ['required', 'email', 'max:255', 'unique:users,email'];
         }
         $validated = $request->validate($rules);
 
@@ -115,41 +118,61 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'Your cart is empty.');
         }
 
-        $totalPrice = 0;
+        try {
+        DB::transaction(function () use ($cart, $validated, $contactData) {
+            $totalPrice = 0;
 
-        foreach ($cart->items as $item) {
-            $totalPrice += $item->unit_price * $item->quantity;
-        }
+            foreach ($cart->items as $item) {
+                $product = Product::lockForUpdate()->find($item->product_id);
 
-        $order = Order::create([
-            'user_id' => Auth::check() ? Auth::id() : null,
-            'session_id' => Auth::check() ? null : session()->getId(),
-            'customer_name' => $contactData['full_name'],
-            'email' => $contactData['email'],
-            'phone' => $contactData['phone'],
-            'address' => $contactData['street'],
-            'city' => $contactData['city'],
-            'zip_code' => $contactData['postal_code'],
-            'delivery_method' => $validated['delivery_method'],
-            'payment_method' => $validated['payment_method'],
-            'status' => 'new',
-            'total_price' => $totalPrice,
-        ]);
+                if (!$product) {
+                    throw new \Exception('Product not found.');
+                }
 
-        foreach ($cart->items as $item) {
-            $order->items()->create([
-                'product_id' => $item->product_id,
-                'quantity' => $item->quantity,
-                'unit_price' => $item->unit_price,
+                if ($product->stock < $item->quantity) {
+                    throw new \Exception("Only {$product->stock} item(s) left in stock for {$product->name}.");
+                }
+
+                $totalPrice += $item->unit_price * $item->quantity;
+            }
+
+            $order = Order::create([
+                'user_id' => Auth::check() ? Auth::id() : null,
+                'session_id' => Auth::check() ? null : session()->getId(),
+                'customer_name' => $contactData['full_name'],
+                'email' => $contactData['email'],
+                'phone' => $contactData['phone'],
+                'address' => $contactData['street'],
+                'city' => $contactData['city'],
+                'zip_code' => $contactData['postal_code'],
+                'delivery_method' => $validated['delivery_method'],
+                'payment_method' => $validated['payment_method'],
+                'status' => 'new',
+                'total_price' => $totalPrice,
             ]);
-        }
 
-        $cart->items()->delete();
+            foreach ($cart->items as $item) {
+                $product = Product::lockForUpdate()->find($item->product_id);
+
+                $order->items()->create([
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $item->unit_price,
+                ]);
+
+                $product->decrement('stock', $item->quantity);
+            }
+
+            $cart->items()->delete();
+        });
 
         session()->forget(['checkout_contact', 'checkout_shipping']);
 
         return redirect()->route('checkout.success');
+    } catch (\Exception $e) {
+        return redirect()->route('cart')->with('error', $e->getMessage());
     }
+}
 
     private function getOrCreateCart(): Cart
     {

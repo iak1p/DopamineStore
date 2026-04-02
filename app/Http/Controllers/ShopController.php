@@ -45,10 +45,17 @@ class ShopController extends Controller
     {
         $selectedCategory = $request->query('category');
         $sort = $request->query('sort');
+        $search = trim($request->query('search', ''));
 
         // Строим запрос (НЕ get()!)
         $query = Product::with('images');
 
+         if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('category', 'like', '%' . $search . '%');
+            });
+        }
         // Фильтр по категории
         if ($selectedCategory) {
             $query->where('category', $selectedCategory);
@@ -73,6 +80,47 @@ class ShopController extends Controller
             ['slug' => 'boxes', 'name' => 'Boxes'],
         ];
 
-        return view('shop', compact('products', 'categories', 'selectedCategory', 'sort'));
+        return view('shop', compact('products', 'categories', 'selectedCategory', 'sort', 'search'));
     }
+
+
+
+
+
+
+
+
+    // поиск
+    public function suggestions(Request $request)
+    {
+        $search = trim($request->query('search', ''));
+
+        if ($search === '') {
+            return response()->json([]);
+        }
+
+        $products = Product::with('images')
+            ->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                ->orWhere('category', 'like', '%' . $search . '%');
+            })
+            ->limit(5)
+            ->get()
+            ->map(function ($product) {
+                $firstImage = $product->images->first();
+
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'slug' => $product->slug,
+                    'category' => $product->category,
+                    'price' => $product->price,
+                    'image' => asset('storage/' . $firstImage->image_path),
+                    'alt' => $firstImage?->alt_text ?? $product->name,
+                ];
+            });
+
+        return response()->json($products);
+    }
+    
 }
