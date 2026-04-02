@@ -8,7 +8,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $query = Product::with('images');
+        $query = Product::with('images')
+            ->withSum('orderItems', 'quantity')
+            ->orderByDesc('order_items_sum_quantity');
 
         $products = $query->paginate(4)->withQueryString();
 

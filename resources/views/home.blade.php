@@ -26,7 +26,7 @@
             <div id="productsGrid"
                 class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($products as $product)
-                    <x-product-card :product="$product" />
+                    <x-product-card :product="$product" :admin='false' />
                 @endforeach
             </div>
         </section>

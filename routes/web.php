@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -8,18 +9,18 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShopController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/home', [HomeController::class, 'index']);
-Route::get('/main', function () {
-    return view('main');
-});
+// Route::get('/main', function () {
+//     return view('main');
+// });
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
-Route::get('/product/{slug}', [ProductController::class, 'show']);
+Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
@@ -40,7 +41,15 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/admin/create', [AdminController::class, 'showCreate'])->name('admin.create');
+Route::post('/admin/create', [AdminController::class, 'create'])->name('admin.create.store');
 
+Route::get('/admin/edit/{slug}', [AdminController::class, 'showEdit'])->name('admin.edit');
+Route::patch('/admin/edit/{slug}', [AdminController::class, 'edit'])->name('admin.edit.store');
+
+Route::delete('/admin/delete/{slug}', [AdminController::class, 'delete'])->name('admin.delete');
+
+Route::delete('/admin/delete-img/{id}', [AdminController::class, 'deleteImg'])->name('admin.delete.img');
 
 //поиск
 Route::get('/search-suggestions', [ShopController::class, 'suggestions']);
