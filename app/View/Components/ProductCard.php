@@ -10,10 +10,12 @@ use Illuminate\View\Component;
 class ProductCard extends Component
 {
     public Product $product;
+    public bool $admin;
 
-    public function __construct(Product $product)
+    public function __construct(Product $product, bool $admin)
     {
         $this->product = $product;
+        $this->admin = $admin;
     }
 
     public function render(): View|Closure|string
