@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,132 +8,73 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
+
 <body class="font-[Manrope]">
     @php
-            $deliveryOptions = [
-                [
-                    'id' => 'standard',
-                    'name' => 'Standard delivery within 60 minutes',
-                    'price' => 1.50,
-                    'icon' => '🚚',
-                ],
-                [
-                    'id' => 'express',
-                    'name' => 'Express delivery within 30 minutes',
-                    'price' => 3.00,
-                    'icon' => '⏱️',
-                ],
-                [
-                    'id' => 'pickup',
-                    'name' => 'In-store pickup',
-                    'price' => 0.00,
-                    'icon' => '📍',
-                ],
-            ];
+        $deliveryOptions = [
+            [
+                'id' => 'standard',
+                'name' => 'Standard delivery within 60 minutes',
+                'price' => 1.5,
+                'icon' => '🚚',
+            ],
+            [
+                'id' => 'express',
+                'name' => 'Express delivery within 30 minutes',
+                'price' => 3.0,
+                'icon' => '⏱️',
+            ],
+            [
+                'id' => 'pickup',
+                'name' => 'In-store pickup',
+                'price' => 0.0,
+                'icon' => '📍',
+            ],
+        ];
 
-            $paymentOptions = [
-                [
-                    'id' => 'cash',
-                    'name' => 'Cash on delivery',
-                    'icon' => '💵',
-                ],
-                [
-                    'id' => 'card',
-                    'name' => 'Card payment',
-                    'icon' => '💳',
-                ],
-            ];
+        $paymentOptions = [
+            [
+                'id' => 'cash',
+                'name' => 'Cash on delivery',
+                'icon' => '💵',
+            ],
+            [
+                'id' => 'card',
+                'name' => 'Card payment',
+                'icon' => '💳',
+            ],
+        ];
 
-            $selectedDelivery = old('delivery_method', 'standard');
-            $selectedPayment = old('payment_method', 'cash');
+        $selectedDelivery = old('delivery_method', 'standard');
+        $selectedPayment = old('payment_method', 'cash');
 
-            $cartTotalExVat = 0;
-            $cartVat = 0;
-            $cartTotalIncVat = 0;
+        $cartTotalExVat = 0;
+        $cartVat = 0;
+        $cartTotalIncVat = 0;
 
-            foreach ($cart->items as $item) {
-                $vatRate = $item->product->vat_rate ?? 20;
-                $lineTotalExVat = $item->unit_price * $item->quantity;
-                $lineVat = $lineTotalExVat * ($vatRate / 100);
-                $lineTotalIncVat = $lineTotalExVat + $lineVat;
+        foreach ($cart->items as $item) {
+            $vatRate = $item->product->vat_rate ?? 20;
+            $vatDivider = 1 + $vatRate / 100;
 
-                $cartTotalExVat += $lineTotalExVat;
-                $cartVat += $lineVat;
-                $cartTotalIncVat += $lineTotalIncVat;
-            }
+            $unitPriceIncVat = $item->unit_price;
+            $unitPriceExVat = $unitPriceIncVat / $vatDivider;
 
-            $selectedDeliveryPrice = collect($deliveryOptions)->firstWhere('id', $selectedDelivery)['price'] ?? 0;
-            $grandTotal = $cartTotalIncVat + $selectedDeliveryPrice;
-        @endphp
+            $lineTotalIncVat = $unitPriceIncVat * $item->quantity;
+            $lineTotalExVat = $unitPriceExVat * $item->quantity;
+            $lineVat = $lineTotalIncVat - $lineTotalExVat;
 
-    <header class="container mx-auto px-3 py-3">
-        <div class="flex-row gap-3 sm:flex sm:items-center sm:justify-between">
-            <div class="flex items-center gap-10">
-                <div>
-                    <p class="font-bold">Dopamine.</p>
-                </div>
+            $cartTotalExVat += $lineTotalExVat;
+            $cartVat += $lineVat;
+            $cartTotalIncVat += $lineTotalIncVat;
+        }
 
-                <ul class="flex gap-3">
-                    <li class="py-5 text-sm">
-                        <a
-                            href="{{ route('shop') }}"
-                            aria-current="page"
-                            class="aria-[current=page]:underline"
-                        >
-                            Shop
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        $selectedDeliveryPrice = collect($deliveryOptions)->firstWhere('id', $selectedDelivery)['price'] ?? 0;
+        $grandTotal = $cartTotalIncVat + $selectedDeliveryPrice;
+    @endphp
 
-            <input
-                type="text"
-                class="w-full rounded-xl border border-[#D9D9D9] px-3 py-5 text-sm"
-                placeholder="Search for products"
-                id="search"
-                name="search"
-            />
-
-            <div class="flex items-center gap-3">
-                <button
-                    class="w-full rounded-xl bg-[#F5F5F5] px-8 py-5 text-sm sm:w-auto"
-                    type="button"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                        class="size-4"
-                    >
-                        <path
-                            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
-                        />
-                    </svg>
-                </button>
-
-                <a
-                    href="{{ route('cart') }}"
-                    class="inline-flex w-full items-center justify-center rounded-xl bg-[#2B662D] px-8 py-5 text-sm sm:w-auto"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        fill="white"
-                        class="size-4"
-                    >
-                        <path
-                            d="M1.75 1.002a.75.75 0 1 0 0 1.5h1.835l1.24 5.113A3.752 3.752 0 0 0 2 11.25c0 .414.336.75.75.75h10.5a.75.75 0 0 0 0-1.5H3.628A2.25 2.25 0 0 1 5.75 9h6.5a.75.75 0 0 0 .73-.578l.846-3.595a.75.75 0 0 0-.578-.906 44.118 44.118 0 0 0-7.996-.91l-.348-1.436a.75.75 0 0 0-.73-.573H1.75ZM5 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM13 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
-                        />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </header>
+    <x-header />
 
     <main class="container mx-auto px-3 pb-14">
         <div class="mt-4 border-y border-[#EFEFEF] py-4">
@@ -150,9 +92,7 @@
         </div>
 
         @if ($errors->any())
-            <div
-                class="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-            >
+            <div class="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 Please choose delivery and payment method.
             </div>
         @endif
@@ -160,29 +100,16 @@
         <form action="{{ route('checkout.submit') }}" method="POST" id="checkoutForm">
             @csrf
 
-            <input
-                type="hidden"
-                name="delivery_method"
-                id="delivery_method"
-                value="{{ $selectedDelivery }}"
-            />
-            <input
-                type="hidden"
-                name="payment_method"
-                id="payment_method"
-                value="{{ $selectedPayment }}"
-            />
+            <input type="hidden" name="delivery_method" id="delivery_method" value="{{ $selectedDelivery }}" />
+            <input type="hidden" name="payment_method" id="payment_method" value="{{ $selectedPayment }}" />
 
             <h2 class="mt-10 text-2xl font-semibold text-[#2B662D]">Delivery</h2>
 
             <section class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
                 @foreach ($deliveryOptions as $option)
-                    <button
-                        type="button"
+                    <button type="button"
                         class="delivery-option rounded-xl bg-white p-6 text-left transition {{ $selectedDelivery === $option['id'] ? 'border-2 border-[#2B662D]' : 'border border-[#E5E5E5]' }}"
-                        data-delivery-id="{{ $option['id'] }}"
-                        data-delivery-price="{{ $option['price'] }}"
-                    >
+                        data-delivery-id="{{ $option['id'] }}" data-delivery-price="{{ $option['price'] }}">
                         <div class="flex items-center gap-4">
                             <span class="text-3xl">{{ $option['icon'] }}</span>
                             <div>
@@ -200,11 +127,9 @@
 
                     <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                         @foreach ($paymentOptions as $option)
-                            <button
-                                type="button"
+                            <button type="button"
                                 class="payment-option flex items-center justify-center gap-2 rounded-xl px-4 py-4 text-sm font-semibold transition {{ $selectedPayment === $option['id'] ? 'border-2 border-[#2B662D] text-[#2B662D]' : 'border border-[#D9D9D9] text-[#444]' }}"
-                                data-payment-id="{{ $option['id'] }}"
-                            >
+                                data-payment-id="{{ $option['id'] }}">
                                 <span>{{ $option['icon'] }}</span>
                                 <span>{{ $option['name'] }}</span>
                             </button>
@@ -217,8 +142,7 @@
 
             <div class="mt-6">
                 <div
-                    class="hidden gap-4 border-b border-[#EFEFEF] pb-3 text-sm font-semibold text-[#333] md:grid md:grid-cols-[1fr_90px_120px_120px_140px]"
-                >
+                    class="hidden gap-4 border-b border-[#EFEFEF] pb-3 text-sm font-semibold text-[#333] md:grid md:grid-cols-[1fr_90px_120px_120px_140px]">
                     <div>Product Name</div>
                     <div class="text-center">DPH %</div>
                     <div class="text-center">Price per kg</div>
@@ -228,20 +152,18 @@
 
                 @foreach ($cart->items as $item)
                     @php
-                            $vatRate = $item->product->vat_rate ?? 20;
-                            $lineTotalExVat = $item->unit_price * $item->quantity;
-                            $categoryName = collect($categories)->firstWhere('slug', $item->product->category)['name']
-                                ?? $item->product->category;
-                        @endphp
+                        $vatRate = $item->product->vat_rate ?? 20;
+                        $lineTotalExVat = $item->unit_price * $item->quantity;
+                        $categoryName =
+                            collect($categories)->firstWhere('slug', $item->product->category)['name'] ??
+                            $item->product->category;
+                    @endphp
                     <div
-                        class="grid grid-cols-1 items-center gap-4 border-b border-[#EFEFEF] py-5 md:grid-cols-[1fr_90px_120px_120px_140px]"
-                    >
+                        class="grid grid-cols-1 items-center gap-4 border-b border-[#EFEFEF] py-5 md:grid-cols-[1fr_90px_120px_120px_140px]">
                         <div class="flex items-center gap-3 font-semibold text-[#222]">
-                            <img
-                                src="{{ Storage::url($item->product->images->first()?->image_path ?? 'products/placeholder.png') }}"
+                            <img src="{{ Storage::url($item->product->images->first()?->image_path ?? 'products/placeholder.png') }}"
                                 alt="{{ $item->product->images->first()?->alt_text ?? $item->product->name }}"
-                                class="h-14 w-14 rounded-lg border border-[#EEE] bg-[#F6F6F6] p-2 object-contain"
-                            />
+                                class="h-14 w-14 rounded-lg border border-[#EEE] bg-[#F6F6F6] p-2 object-contain" />
 
                             <div>
                                 <div>{{ $item->product->name }}</div>
@@ -270,9 +192,8 @@
                             </div>
                             <div>
                                 Price:
-                                <span class="font-semibold text-[#333]"
-                                    >€{{ number_format($item->unit_price, 2) }}</span
-                                >
+                                <span
+                                    class="font-semibold text-[#333]">€{{ number_format($item->unit_price, 2) }}</span>
                             </div>
                             <div>
                                 Qty:
@@ -280,9 +201,7 @@
                             </div>
                             <div>
                                 Total:
-                                <span class="font-semibold text-[#333]"
-                                    >€{{ number_format($lineTotalExVat, 2) }}</span
-                                >
+                                <span class="font-semibold text-[#333]">€{{ number_format($lineTotalExVat, 2) }}</span>
                             </div>
                         </div>
                     </div>
@@ -294,14 +213,17 @@
                     <div class="text-right">
                         <div class="text-sm text-[#333]">
                             €{{ number_format($cartTotalExVat, 2) }}
-                            <span class="text-[#8A8A8A]">bez DPH</span>
+                            <span class="text-[#8A8A8A]">without DPH</span>
+                        </div>
+                        <div class="text-sm text-[#333]">
+                            €{{ number_format($cartTotalIncVat, 2) }}
+                            <span class="text-[#8A8A8A]">with DPH</span>
                         </div>
 
                         <div class="mt-1 text-sm text-[#333]">
                             Delivery:
-                            <span class="font-semibold" id="deliveryPriceDisplay"
-                                >€{{ number_format($selectedDeliveryPrice, 2) }}</span
-                            >
+                            <span class="font-semibold"
+                                id="deliveryPriceDisplay">€{{ number_format($selectedDeliveryPrice, 2) }}</span>
                         </div>
 
                         <div class="mt-1 text-sm font-semibold text-[#2B662D]">
@@ -312,23 +234,20 @@
                 </div>
 
                 <div class="mt-10 flex items-center justify-between">
-                    <a
-                        href="{{ route('checkout.contact') }}"
-                        class="rounded-full border border-[#D9D9D9] px-6 py-3 font-semibold text-[#333]"
-                    >
+                    <a href="{{ route('checkout.contact') }}"
+                        class="rounded-full border border-[#D9D9D9] px-6 py-3 font-semibold text-[#333]">
                         Back
                     </a>
 
-                    <button
-                        type="submit"
-                        class="rounded-full bg-[#2B662D] px-6 py-3 font-semibold text-white md:ml-auto"
-                    >
+                    <button type="submit"
+                        class="rounded-full bg-[#2B662D] px-6 py-3 font-semibold text-white md:ml-auto">
                         Submit order
                     </button>
                 </div>
         </form>
     </main>
 </body>
+
 </html>
 <script>
     const deliveryInput = document.getElementById('delivery_method');
