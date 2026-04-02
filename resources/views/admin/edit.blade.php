@@ -25,10 +25,11 @@
 
         <div class="mt-8 rounded-2xl border border-[#EFEFEF] bg-white p-6">
             <form action="{{ route('admin.edit.store', $product->slug) }}" method="POST"
-                class="grid grid-cols-1 gap-10 lg:grid-cols-2" enctype="multipart/form-data">
+                class="grid grid-cols-1 gap-10 lg:grid-cols-2" enctype="multipart/form-data"
+                id="main-form">
                 @csrf
                 @method('PATCH')
-                
+
                 <div>
                     <label class="block">
                         <span class="text-sm font-semibold text-[#555]">Title *</span>
@@ -147,32 +148,43 @@
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </label>
-
-                    <div class="mt-6 flex gap-3">
-                        @foreach ($product['images'] as $image)
-                            <button type="button"
-                                data-image="{{ asset('storage/' . $image['image_path']) }}"
-                                class="product-thumb h-16 w-16 rounded-xl border border-[#EAEAEA] bg-[#F6F6F6] p-2 cursor-pointer">
-                                <img src="{{ asset('storage/' . $image['image_path']) }}"
-                                    class="h-full w-full object-contain"
-                                    alt="{{ $product['name'] }}" />
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-end">
-                        <button type="reset"
-                            class="rounded-full border border-[#CFCFCF] px-6 py-3 font-semibold text-[#444]">
-                            Cancel
-                        </button>
-
-                        <button type="submit"
-                            class="rounded-full bg-[#2B662D] px-6 py-3 font-semibold text-white">
-                            Save product
-                        </button>
-                    </div>
-                </div>
             </form>
+
+            <div class="mt-6 flex gap-3">
+                @foreach ($product['images'] as $image)
+                    <div class="relative h-16 w-16">
+                        <div
+                            class="product-thumb h-full w-full rounded-xl border border-[#EAEAEA] bg-[#F6F6F6] p-2">
+                            <img src="{{ asset('storage/' . $image['image_path']) }}"
+                                class="h-full w-full object-contain"
+                                alt="{{ $product['name'] }}" />
+                        </div>
+                        <form action="{{ route('admin.delete.img', $image['id']) }}"
+                            method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                {{ $product->images->count() == 1 ? 'disabled' : '' }}
+                                class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-[#E6E6E6] bg-white text-xs hover:bg-[#F5F5F5] shadow">
+                                ✕
+                            </button>
+                        </form>
+
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-end">
+                <button type="reset" form="main-form"
+                    class="rounded-full border border-[#CFCFCF] px-6 py-3 font-semibold text-[#444]">
+                    Cancel
+                </button>
+
+                <button type="submit" form="main-form"
+                    class="rounded-full bg-[#2B662D] px-6 py-3 font-semibold text-white">
+                    Save product
+                </button>
+            </div>
         </div>
     </main>
     <x-footer />

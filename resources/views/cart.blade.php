@@ -117,7 +117,7 @@
                             </button>
                         </form>
 
-                        <span class="min-w-[24px] text-center text-sm font-semibold text-[#333]">
+                        <span class="min-w-6 text-center text-sm font-semibold text-[#333]">
                             {{ $item->quantity }}
                         </span>
 
@@ -159,7 +159,7 @@
                 </div>
             @endforelse
 
-            <div class="w-full md:ml-auto md:w-[420px]">
+            <div class="w-full md:ml-auto md:w-105">
                 <div class="mt-10 text-lg font-medium text-[#333]">Summary</div>
 
                 <div class="mt-4 flex items-center justify-between text-sm text-[#333]">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductImage;
 // use Illuminate\Container\Attributes\Storage;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -10,8 +11,6 @@ use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
-    //
-
     public function showCreate()
     {
         return view('admin.create');
@@ -38,6 +37,8 @@ class AdminController extends Controller
             'price' => ['required', 'numeric', 'min:0.01'],
             'quantity' => ['required', 'numeric', 'min:0'],
             'category' => ['required', 'string'],
+            'images' => ['required', 'array'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'unit' => ['required', 'string'],
         ]);
 
@@ -53,6 +54,15 @@ class AdminController extends Controller
             'category' => $validated['category'],
             'unit' => $validated['unit'],
         ]);
+
+        foreach ($request->file('images') as $file) {
+            $path = $file->store('products', 'public');
+
+            $product->images()->create([
+                'image_path' => $path,
+                'alt_text' => $product->name,
+            ]);
+        }
 
         return redirect()->route('product', $product->slug);
     }
@@ -70,6 +80,17 @@ class AdminController extends Controller
         return redirect()->route('shop');
     }
 
+    public function deleteImg(Request $request, $id)
+    {
+        $image = ProductImage::findOrFail($id);
+
+        Storage::disk('public')->delete($image->image_path);
+
+        $image->delete();
+
+        return back();
+    }
+
     public function create(Request $request)
     {
         $validated = $request->validate([
@@ -82,10 +103,6 @@ class AdminController extends Controller
             'category' => ['string'],
             'unit' => ['string'],
         ]);
-
-        // dd($request->all());
-
-        // dd($paths);
 
         $product = Product::create([
             'name' => $validated['name'],

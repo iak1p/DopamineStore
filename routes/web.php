@@ -9,14 +9,14 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShopController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/home', [HomeController::class, 'index']);
-Route::get('/main', function () {
-    return view('main');
-});
+// Route::get('/main', function () {
+//     return view('main');
+// });
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
@@ -48,6 +48,8 @@ Route::get('/admin/edit/{slug}', [AdminController::class, 'showEdit'])->name('ad
 Route::patch('/admin/edit/{slug}', [AdminController::class, 'edit'])->name('admin.edit.store');
 
 Route::delete('/admin/delete/{slug}', [AdminController::class, 'delete'])->name('admin.delete');
+
+Route::delete('/admin/delete-img/{id}', [AdminController::class, 'deleteImg'])->name('admin.delete.img');
 
 //поиск
 Route::get('/search-suggestions', [ShopController::class, 'suggestions']);
