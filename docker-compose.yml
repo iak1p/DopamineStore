@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: eshop
       POSTGRES_PASSWORD: eshop
     ports:
-      - "5434:5432"
+      - "5432:5432"
     volumes:
       - eshop_pg:/var/lib/postgresql/data
 

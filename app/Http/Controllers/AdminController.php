@@ -37,7 +37,7 @@ class AdminController extends Controller
             'price' => ['required', 'numeric', 'min:0.01'],
             'quantity' => ['required', 'numeric', 'min:0'],
             'category' => ['required', 'string'],
-            'images' => ['required', 'array'],
+            'images' => ['array'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'unit' => ['required', 'string'],
         ]);
@@ -54,27 +54,39 @@ class AdminController extends Controller
             'category' => $validated['category'],
             'unit' => $validated['unit'],
         ]);
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('products', 'public');
 
-        foreach ($request->file('images') as $file) {
-            $path = $file->store('products', 'public');
-
-            $product->images()->create([
-                'image_path' => $path,
-                'alt_text' => $product->name,
-            ]);
+                $product->images()->create([
+                    'image_path' => $path,
+                    'alt_text' => $product->name,
+                ]);
+            }
         }
-
         return redirect()->route('product', $product->slug);
     }
 
     public function delete(Request $request, $slug)
     {
-        $product = Product::with('images')->where('slug', $slug)->firstOrFail();
+        // $product = Product::with('images')->where('slug', $slug)->firstOrFail();
+
+        // foreach ($product->images as $image) {
+        //     Storage::disk('public')->delete($image->image_path);
+        // }
+
+        // $product->delete();
+
+        // return redirect()->route('shop');
+
+        $product = Product::with(['images', 'orderItems'])->where('slug', $slug)->firstOrFail();
 
         foreach ($product->images as $image) {
             Storage::disk('public')->delete($image->image_path);
+            $image->delete();
         }
 
+        $product->orderItems()->delete();
         $product->delete();
 
         return redirect()->route('shop');
