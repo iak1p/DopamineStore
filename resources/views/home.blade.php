@@ -15,7 +15,7 @@
 <body class="font-[Manrope]">
     <x-header />
     <main>
-        <img src="{{ asset('phase1\templates\assets\img\baner.png') }}" alt="Banner"
+        <img src="{{ asset('storage/products/baner.png') }}" alt="Banner"
             class="w-full h-full object-cover" />
 
         <section class="container mx-auto py-5 px-3">

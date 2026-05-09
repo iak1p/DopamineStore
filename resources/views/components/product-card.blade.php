@@ -25,6 +25,7 @@
                     @csrf
                     @method('DELETE')
                     <button type="submit"
+                        onclick="return confirm('Are you sure you want to delete this product?');"
                         class="cursor-pointer flex h-9 w-9 items-center justify-center rounded-full border border-[#E6E6E6] bg-white hover:bg-[#FFECEC]">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
                             fill="currentColor" class="size-4 text-red-600">

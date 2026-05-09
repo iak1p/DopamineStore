@@ -12,7 +12,7 @@
             <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">Navigation</h4>
             <ul class="space-y-3 text-sm text-[#D9D9D9]">
                 <li>
-                    <a href="{{ url('/home') }}" class="hover:text-white transition">Home</a>
+                    <a href="{{ url('/') }}" class="hover:text-white transition">Home</a>
                 </li>
                 <li>
                     <a href="{{ route('shop') }}" class="hover:text-white transition">Shop</a>

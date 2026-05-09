@@ -13,7 +13,7 @@ use App\Http\Controllers\ShopController;
 //     return view('welcome');
 // });
 
-Route::get('/home', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index']);
 // Route::get('/main', function () {
 //     return view('main');
 // });
@@ -24,6 +24,7 @@ Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/add-amount/{product}', [CartController::class, 'addAmount'])->name('cart.add.amount');
 Route::patch('/cart/item/{cartItem}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/item/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
 Route::patch('/cart/items/{item}/decrease', [CartController::class, 'decrease'])->name('cart.decrease');

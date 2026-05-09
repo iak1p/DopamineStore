@@ -45,20 +45,62 @@ class CartController extends Controller
 
         if ($cartItem) {
             if ($cartItem->quantity < $product->stock) {
-            $cartItem->increment('quantity');
-            }else{
+                $cartItem->increment('quantity');
+            } else {
                 return back()->with('error', 'Only ' . $product->stock . ' items available in stock.');
             }
         } else {
-           if ($product->stock > 0) {
-            $cart->items()->create([
-                'product_id' => $product->id,
-                'quantity' => 1,
-                'unit_price' => $product->price,
-            ]);
-           }else {
+            if ($product->stock > 0) {
+                $cart->items()->create([
+                    'product_id' => $product->id,
+                    'quantity' => 1,
+                    'unit_price' => $product->price,
+                ]);
+            } else {
+                return back()->with('error', 'This product is out of stock.');
+            }
+        }
+
+        return redirect()->route('cart');
+    }
+
+
+    public function addAmount(Product $product, Request $request)
+    {
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $quantity = (int) $validated['quantity'];
+
+        $cart = $this->getOrCreateCart();
+
+        $cartItem = $cart->items()->where('product_id', $product->id)->first();
+
+        if ($product->stock <= 0) {
             return back()->with('error', 'This product is out of stock.');
         }
+
+        if ($cartItem) {
+            $newQuantity = $cartItem->quantity + $quantity;
+
+            if ($newQuantity > $product->stock) {
+                return back()->with('error', 'Only ' . $product->stock . ' items available in stock.');
+            }
+
+            $cartItem->update([
+                'quantity' => $newQuantity,
+            ]);
+        } else {
+            if ($quantity > $product->stock) {
+                return back()->with('error', 'Only ' . $product->stock . ' items available in stock.');
+            }
+
+            $cart->items()->create([
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'unit_price' => $product->price,
+            ]);
         }
 
         return redirect()->route('cart');
@@ -95,16 +137,15 @@ class CartController extends Controller
 
     public function decrease(CartItem $item)
     {
-         $cart = $this->getOrCreateCart();
-         
-            if ($item->cart_id !== $cart->id) {
-        abort(403);
-    }
+        $cart = $this->getOrCreateCart();
+
+        if ($item->cart_id !== $cart->id) {
+            abort(403);
+        }
         if ($item->quantity > 1) {
             $item->decrement('quantity');
         }
 
         return back();
     }
-
 }
