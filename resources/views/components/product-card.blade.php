@@ -11,7 +11,7 @@
 
         @if ($admin)
             <div
-                class="absolute top-3 right-3 flex gap-2 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
+                class="absolute top-3 right-3 flex gap-2 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100 z-10">
                 <a href="{{ route('admin.edit', $product->slug) }}"
                     class="flex h-9 w-9 items-center justify-center rounded-full border border-[#E6E6E6] bg-white hover:bg-[#F5F5F5]">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
@@ -25,7 +25,8 @@
                     @csrf
                     @method('DELETE')
                     <button type="submit"
-                        class="flex h-9 w-9 items-center justify-center rounded-full border border-[#E6E6E6] bg-white hover:bg-[#FFECEC]">
+                        onclick="return confirm('Are you sure you want to delete this product?');"
+                        class="cursor-pointer flex h-9 w-9 items-center justify-center rounded-full border border-[#E6E6E6] bg-white hover:bg-[#FFECEC]">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
                             fill="currentColor" class="size-4 text-red-600">
                             <path
@@ -40,10 +41,22 @@
         @endif
 
         <a href="{{ $product->url }}" class="block {{ $product->stock <= 0 ? 'opacity-70' : '' }}">
-            <div class="flex h-40 justify-center">
+            {{-- <div class="flex h-40 justify-center">
                 <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
                     alt="{{ $product->images->first()->alt_text ?? $product->name }}"
                     class="h-full w-auto object-contain" loading="lazy" />
+            </div> --}}
+
+            <div class="relative flex h-40 justify-center">
+                <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
+                    class="h-full w-auto object-contain transition-opacity duration-700 {{ count($product->images) > 1 ? 'group-hover:opacity-0' : '' }}"
+                    alt="{{ $product->name }}" />
+
+                @if (count($product->images) > 1)
+                    <img src="{{ asset('storage/' . $product->images->skip(1)->first()->image_path) }}"
+                        class="absolute h-full w-auto object-contain opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                        alt="{{ $product->name }}" />
+                @endif
             </div>
 
             <div class="mt-4 text-center">

@@ -41,37 +41,91 @@ class ShopController extends Controller
     //     return view('shop', compact('products', 'categories', 'selectedCategory', 'pages'));
     // }
 
+    // public function index(Request $request)
+    // {
+    //     $selectedCategory = $request->query('category');
+    //     $sort = $request->query('sort');
+    //     $search = trim($request->query('search', ''));
+
+    //     $query = Product::with('images');
+
+    //     if ($search !== '') {
+    //         $query->where(function ($q) use ($search) {
+    //             $q->where('name', 'like', '%' . $search . '%')
+    //                 ->orWhere('category', 'like', '%' . $search . '%');
+    //         });
+    //     }
+
+    //     if ($selectedCategory) {
+    //         $query->where('category', $selectedCategory);
+    //     }
+
+    //     if ($sort === 'price_asc') {
+    //         $query->orderBy('price', 'asc');
+    //     } elseif ($sort === 'price_desc') {
+    //         $query->orderBy('price', 'desc');
+    //     }
+
+    //     $products = $query->paginate(8)->withQueryString();
+
+    //     $categories = [
+    //         ['slug' => 'stone', 'name' => 'Stone fruits'],
+    //         ['slug' => 'exotic', 'name' => 'Exotic fruits'],
+    //         ['slug' => 'citrus', 'name' => 'Citrus fruits'],
+    //         ['slug' => 'pome', 'name' => 'Pome fruits'],
+    //         ['slug' => 'boxes', 'name' => 'Boxes'],
+    //     ];
+
+    //     return view('shop', compact('products', 'categories', 'selectedCategory', 'sort', 'search'));
+    // }
+
     public function index(Request $request)
     {
         $selectedCategory = $request->query('category');
         $sort = $request->query('sort');
         $search = trim($request->query('search', ''));
 
-        // Строим запрос (НЕ get()!)
+        $priceMin = $request->query('price_min');
+        $priceMax = $request->query('price_max');
+        $stock = $request->query('stock');
+
         $query = Product::with('images');
 
-         if ($search !== '') {
+        if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('category', 'like', '%' . $search . '%');
+                    ->orWhere('category', 'like', '%' . $search . '%');
             });
         }
-        // Фильтр по категории
+
         if ($selectedCategory) {
             $query->where('category', $selectedCategory);
         }
 
-        // Сортировка
+        if ($priceMin !== null && $priceMin !== '') {
+            $query->where('price', '>=', $priceMin);
+        }
+
+        if ($priceMax !== null && $priceMax !== '') {
+            $query->where('price', '<=', $priceMax);
+        }
+
+        if ($stock === 'instock') {
+            $query->where('stock', '>', 0);
+        } elseif ($stock === 'soldout') {
+            $query->where('stock', '<=', 0);
+        }
+
         if ($sort === 'price_asc') {
             $query->orderBy('price', 'asc');
         } elseif ($sort === 'price_desc') {
             $query->orderBy('price', 'desc');
+        } else {
+            $query->latest();
         }
 
-        // Пагинация (8 товаров на страницу)
         $products = $query->paginate(8)->withQueryString();
 
-        // Категории
         $categories = [
             ['slug' => 'stone', 'name' => 'Stone fruits'],
             ['slug' => 'exotic', 'name' => 'Exotic fruits'],
@@ -80,15 +134,17 @@ class ShopController extends Controller
             ['slug' => 'boxes', 'name' => 'Boxes'],
         ];
 
-        return view('shop', compact('products', 'categories', 'selectedCategory', 'sort', 'search'));
+        return view('shop', compact(
+            'products',
+            'categories',
+            'selectedCategory',
+            'sort',
+            'search',
+            'priceMin',
+            'priceMax',
+            'stock'
+        ));
     }
-
-
-
-
-
-
-
 
     // поиск
     public function suggestions(Request $request)
@@ -102,7 +158,7 @@ class ShopController extends Controller
         $products = Product::with('images')
             ->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                ->orWhere('category', 'like', '%' . $search . '%');
+                    ->orWhere('category', 'like', '%' . $search . '%');
             })
             ->limit(5)
             ->get()
@@ -122,5 +178,4 @@ class ShopController extends Controller
 
         return response()->json($products);
     }
-    
 }

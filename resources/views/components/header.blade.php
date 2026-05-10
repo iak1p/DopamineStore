@@ -2,7 +2,7 @@
     <div class="sm:flex sm:justify-between sm:items-center flex-row gap-3">
         <div class="flex items-center gap-10">
             <div>
-                <a href="{{ url('/home') }}">
+                <a href="{{ url('/') }}">
                     <p class="font-bold">Dopamine.</p>
                 </a>
             </div>

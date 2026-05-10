@@ -1,0 +1,437 @@
+========================================================
+  DOKUMENTÁCIA – SEMESTRÁLNY PROJEKT: DOPAMINE STORE
+========================================================
+
+
+1. ZADANIE
+==========
+
+Cieľom projektu bolo vytvoriť webovú aplikáciu – elektronický obchod
+(e-shop) zameraný na predaj čerstvého ovocia pod názvom Dopamine Store.
+Aplikácia komplexne rieši definované prípady použitia pre klientskú časť
+(prehliadanie produktov, košík, dokončenie objednávky, registrácia a
+prihlásenie) a administrátorskú časť (správa produktov – pridanie, úprava
+a vymazanie). Celá implementácia je postavená na PHP frameworku Laravel
+s renderovaním na strane servera (Server-Side Rendering, SSR) s využitím
+Blade šablón.
+
+
+2. DIAGRAM FYZICKÉHO DÁTOVÉHO MODELU
+=====================================
+
+Oproti návrhu z 1. fázy bol fyzický dátový model rozšírený o:
+
+  - Stĺpec is_admin (typ BOOLEAN, predvolená hodnota false) v tabuľke
+    users. Táto zmena bola nevyhnutná pre implementáciu administrátorskej
+    roly bez potreby zavádzania samostatnej tabuľky rolí. Keďže aplikácia
+    rozlišuje iba dve role (bežný používateľ a administrátor), jednoduchý
+    boolean príznak je postačujúci a zbytočne nekomplikuje dátový model.
+
+  - Tabuľka sessions a password_reset_tokens, ktoré sú súčasťou
+    štandardnej migrácie Laravel frameworku a slúžia na správu relácií
+    a obnovu hesla.
+
+Popis jednotlivých tabuliek:
+
+  users
+    id                   – primárny kľúč
+    name                 – meno používateľa
+    email                – unikátny e-mail
+    password             – hashované heslo (bcrypt)
+    is_admin             – boolean príznak administrátora, DEFAULT false
+    email_verified_at    – čas overenia e-mailu (nullable)
+    remember_token       – token pre funkciu "zapamätať si ma"
+    created_at, updated_at
+
+  products
+    id                   – primárny kľúč
+    name                 – názov produktu
+    price                – cena (DECIMAL 10,2)
+    description          – textový popis (nullable)
+    stock                – počet kusov na sklade (UNSIGNED INT, DEFAULT 0)
+    category             – kategória (stone, exotic, citrus, pome, boxes)
+    url                  – URL adresa stránky produktu
+    slug                 – URL-friendly identifikátor (generovaný z názvu)
+    unit                 – merná jednotka (ENUM: kg alebo pcs)
+    created_at, updated_at
+
+  product_images
+    id                   – primárny kľúč
+    product_id           – cudzí kľúč na products (CASCADE DELETE)
+    image_path           – relatívna cesta k súboru v storage
+    alt_text             – alternatívny text obrázka (nullable)
+    created_at, updated_at
+
+  carts
+    id                   – primárny kľúč
+    user_id              – cudzí kľúč na users (NULL ON DELETE, UNIQUE, nullable)
+    session_id           – identifikátor relácie pre neprihlásených (UNIQUE, nullable)
+    created_at, updated_at
+
+    Každý košík patrí buď prihláseniu používateľovi (user_id), alebo je
+    identifikovaný reláciou (session_id). Táto kombinácia umožňuje nákup
+    bez prihlásenia.
+
+  cart_items
+    id                   – primárny kľúč
+    cart_id              – cudzí kľúč na carts (CASCADE DELETE)
+    product_id           – cudzí kľúč na products (CASCADE DELETE)
+    quantity             – množstvo (UNSIGNED INT, DEFAULT 1)
+    unit_price           – cena za jednotku v čase pridania do košíka
+    created_at, updated_at
+    UNIQUE(cart_id, product_id) – jeden produkt môže byť v košíku iba raz
+
+  orders
+    id                   – primárny kľúč
+    user_id              – cudzí kľúč na users (NULL ON DELETE, nullable)
+    session_id           – relácia pre objednávky bez prihlásenia (nullable)
+    delivery_method      – spôsob doručenia (standard, express, pickup)
+    payment_method       – spôsob platby (cash, card)
+    status               – stav objednávky (DEFAULT 'new')
+    total_price          – celková cena objednávky (DECIMAL 10,2)
+    customer_name        – meno zákazníka
+    email                – e-mail zákazníka
+    phone                – telefónne číslo
+    address              – ulica
+    city                 – mesto
+    zip_code             – PSČ
+    created_at, updated_at
+
+  order_items
+    id                   – primárny kľúč
+    order_id             – cudzí kľúč na orders (CASCADE DELETE)
+    product_id           – cudzí kľúč na products (RESTRICT ON DELETE)
+    quantity             – objednané množstvo
+    unit_price           – cena za jednotku v čase objednávky
+    created_at, updated_at
+
+  sessions (štandardná Laravel tabuľka)
+    id                   – primárny kľúč (string)
+    user_id              – nullable, index
+    ip_address, user_agent, payload, last_activity
+
+  password_reset_tokens (štandardná Laravel tabuľka)
+    email                – primárny kľúč
+    token, created_at
+
+Vzťahy medzi entitami:
+
+  users        1 : 1   carts         (jeden používateľ má jeden košík)
+  users        1 : N   orders
+  carts        1 : N   cart_items
+  products     1 : N   cart_items
+  products     1 : N   product_images
+  products     1 : N   order_items
+  orders       1 : N   order_items
+
+
+3. NÁVRHOVÉ ROZHODNUTIA
+========================
+
+3.1 Rola administrátora
+
+Rolu administrátora sme riešili pridaním boolean stĺpca is_admin do
+existujúcej tabuľky users. Zvažovali sme aj varianty so samostatnou
+tabuľkou rolí (napr. roles s polymorfnou väzbou), avšak keďže aplikácia
+rozlišuje iba dve role, takéto riešenie by bolo zbytočne komplikované.
+
+V modeli User je definovaná metóda isAdmin(), ktorá vracia true ak má
+daný používateľ nastavenú hodnotu is_admin = true. Hodnota is_admin je
+v modeli castovaná ako boolean, takže porovnávanie funguje spoľahlivo
+bez závislosti na type databázy.
+
+Pre ochranu administrátorských trás bol vytvorený vlastný middleware
+IsAdmin (app/Http/Middleware/IsAdmin.php), ktorý je zaregistrovaný pod
+aliasom "admin" v súbore bootstrap/app.php. Všetky trasy /admin/* sú
+chránené kombináciou middlewarov auth (overuje prihlásenie) a admin
+(overuje administrátorskú rolu). Neoprávnený prístup vracia HTTP 403.
+
+V Blade šablónach sú administrátorské prvky (tlačidlá Edit, Delete,
+Add new product) obalené podmienkou @auth a kontrolou isAdmin(), takže
+sú viditeľné výlučne pre prihlásených administrátorov.
+
+3.2 Prenositeľnosť košíka
+
+Košík funguje pre prihlásených aj neprihlásených používateľov. Pre
+neprihlásených je košík identifikovaný cez session_id relácie prehliadača.
+Pre prihlásených je košík viazaný na user_id. Oba typy košíkov sú
+uložené v rovnakej tabuľke carts.
+
+Pri registrácii počas procesu objednávky (checkout) sa obsah sessionového
+košíka automaticky prenesie do košíka nového používateľa. Toto je
+implementované metódou attachSessionCartToUser() v CheckoutController.
+Metóda prechádza všetky položky sessionového košíka a buď ich pridá
+do košíka nového používateľa, alebo zvýši existujúce množstvo, ak daný
+produkt už v košíku je. Sessionový košík je po prenesení vymazaný.
+
+3.3 Vyhľadávanie produktov
+
+Fulltext vyhľadávanie je implementované ako LIKE dopyt nad stĺpcami
+name a category v tabuľke products. Vyhľadáva sa súčasne v názve
+produktu aj v kategórii, čo umožňuje nájsť produkty aj pri zadaní
+typu ovocia (napr. "citrus").
+
+Okrem štandardného vyhľadávania na stránke /shop je implementovaný
+AJAX endpoint /search-suggestions. Pri každej zmene v poli (s čakaním
+300 ms, tzv. debounce) sa odošle GET požiadavka a endpoint vráti JSON
+so zoznamom maximálne 5 zodpovedajúcich produktov vrátane obrázka,
+kategórie a ceny. Výsledky sa zobrazujú pod vyhľadávacím poľom
+v reálnom čase bez obnovenia celej stránky.
+
+3.4 Skladová logika a ochrana pred race condition
+
+Pri pridaní produktu do košíka aj pri finalizácii objednávky sa
+overuje aktuálna dostupnosť skladu (stĺpec stock). Pri dokončení
+objednávky je celá logika zabalená do databázovej transakcie
+(DB::transaction) a pri každom produkte sa používa lockForUpdate(),
+čo zamkne záznamy pre čítanie a zabraňuje súbežným objednávkam viac
+kusov, ako je dostupných na sklade.
+
+3.5 Správa obrázkov produktov
+
+Obrázky produktov sa ukladajú cez Laravel Storage na lokálny disk
+(storage/app/public/products). Produkt môže mať ľubovoľný počet
+obrázkov. Na kartičke produktu je implementovaný hover efekt – pri
+prechode myšou sa zobrazí druhý obrázok (ak existuje). Pri vymazaní
+produktu alebo konkrétneho obrázka sa súbor fyzicky vymaže zo storage
+pomocou Storage::disk('public')->delete(), aby nezostávali osirotené
+súbory.
+
+
+4. PROGRAMOVACIE PROSTREDIE
+============================
+
+Backend framework   : Laravel 12 (PHP 8.2+)
+Databáza            : SQLite (súbor database/database.sqlite)
+Frontend CSS        : Tailwind CSS v4 (načítavaný cez CDN)
+Webové fonty        : Google Fonts – Manrope
+Renderovanie        : Server-side rendering (Blade šablóny)
+Ukladanie súborov   : Laravel Storage (lokálny disk "public")
+
+Odporúčané prostredie podľa zadania je PostgreSQL. V projekte sme
+použili SQLite z dôvodu jednoduchšieho lokálneho vývoja bez nutnosti
+inštalácie databázového servera. Migrácie sú napísané štandardným
+spôsobom cez Laravel Schema Builder a sú plne kompatibilné s PostgreSQL
+bez akýchkoľvek zmien.
+
+Tailwind CSS je načítavaný cez CDN (@tailwindcss/browser@4) priamo
+v HTML hlavičke, čo eliminuje potrebu buildovacieho procesu npm
+pre účely tohto projektu.
+
+
+5. STRUČNÝ OPIS IMPLEMENTÁCIE VYBRANÝCH PRÍPADOV POUŽITIA
+===========================================================
+
+5.1 Zmena množstva pre daný produkt v košíku
+
+Na stránke košíka (cart.blade.php) má každá položka dve tlačidlá –
+zníženie množstva (−) a zvýšenie množstva (+). Každé tlačidlo je
+zabalené vo formulári, ktorý odošle PATCH požiadavku na príslušnú
+trasu:
+
+  - PATCH /cart/items/{item}/decrease  →  CartController@decrease
+  - PATCH /cart/items/{item}/increase  →  CartController@increase
+
+V kontroléri sa vždy overí, že daná položka košíka (CartItem) patrí
+aktuálnemu košíku prihláseného/sessionového používateľa – ochrana
+pred manipuláciou cudzích košíkov cez URL. Pri znížení sa množstvo
+zníži len ak je väčšie ako 1 (zabraňuje nulovému množstvu). Pri
+zvýšení sa overí dostupnosť skladu a v prípade nedostupnosti sa
+zobrazí chybová hláška.
+
+5.2 Prihlásenie používateľa
+
+Prihlásenie je implementované v AuthController. Prihlasovací formulár
+odosiela POST požiadavku na trasu /login. Kontrolér validuje formát
+e-mailu a prítomnosť hesla, potom sa pokúsi o autentifikáciu cez
+Auth::attempt(). Pri nesprávnych prihlasovacích údajoch vráti
+používateľa späť s chybovou hláškou "Invalid email or password."
+len pre pole e-mailu (aby neprezrádzal, ktoré pole je nesprávne).
+Pri úspešnom prihlásení sa vygeneruje nové ID relácie (session
+regeneration) ako ochrana pred session fixation útokom a používateľ
+je presmerovaný na stránku shopu.
+
+Administrátor sa prihlasuje rovnakým formulárom ako bežný zákazník.
+Odlíšenie jeho roly prebieha až po prihlásení na základe hodnoty
+is_admin v databáze.
+
+Odhlásenie (AuthController@logout) invaliduje aktuálnu reláciu,
+vygeneruje nový CSRF token a presmeruje na stránku shopu.
+
+5.3 Vyhľadávanie
+
+Vyhľadávanie funguje na dvoch úrovniach:
+
+  a) Štandardné vyhľadávanie na stránke /shop:
+     Používateľ zadá výraz do poľa v hlavičke a odošle formulár
+     metódou GET. Hodnota parametra "search" sa odovzdá
+     ShopController@index. Kontrolér pridá do Eloquent dopytu
+     podmienku WHERE name LIKE '%...%' OR category LIKE '%...%'.
+     Výsledky sa stránkujú rovnako ako bežný výpis produktov
+     (8 per page) a všetky filtre je možné kombinovať s vyhľadávaním.
+
+  b) Live návrhy (autocomplete):
+     Pri každej zmene hodnoty v poli (s debounce 300 ms) JavaScript
+     odošle AJAX GET na /search-suggestions?search=.... Endpoint
+     ShopController@suggestions vráti JSON zoznam maximálne 5
+     produktov. Každý záznam obsahuje id, name, slug, category,
+     price a URL prvého obrázka. Výsledky sa dynamicky vykreslujú
+     pod poľom ako klikateľné karty s obrázkom a názvom.
+
+5.4 Pridanie produktu do košíka
+
+Na stránke detailu produktu (product.blade.php) má zákazník k dispozícii
+formulár s číselným vstupom pre požadované množstvo. Po odoslaní ide
+POST požiadavka na trasu /cart/add-amount/{product}, ktorú spracuje
+CartController@addAmount:
+
+  1. Nájde alebo vytvorí košík pre aktuálneho používateľa alebo reláciu.
+  2. Overí, či produkt nie je vypredaný (stock <= 0).
+  3. Ak položka v košíku už existuje, sčíta nové množstvo s existujúcim
+     a overí, či súčet nepresahuje sklad.
+  4. Ak položka ešte v košíku nie je, vytvorí nový záznam CartItem
+     so zadaným množstvom a aktuálnou cenou produktu (unit_price).
+  5. Presmeruje na stránku košíka.
+
+Z výpisu produktov na stránke shopu funguje tlačidlo "Add to cart"
+cez CartController@add, ktoré vždy pridá práve 1 kus daného produktu.
+
+5.5 Stránkovanie
+
+Stránkovanie je implementované pomocou Eloquent metódy paginate(8),
+ktorá automaticky rozdelí výsledky dopytu na stránky po 8 produktoch.
+Metóda withQueryString() zabezpečí, že všetky aktuálne GET parametre
+(filtre, vyhľadávanie, zoradenie) sa zachovajú v URL pri prechode
+na ďalšiu alebo predchádzajúcu stranu.
+
+V Blade šablóne shop.blade.php sa zobrazujú navigačné tlačidlá Prev
+a Next. Tlačidlo Prev je deaktivované na prvej strane ($products
+->onFirstPage()), tlačidlo Next je deaktivované na poslednej strane
+(!$products->hasMorePages()). Aktuálna strana a celkový počet strán
+sa zobrazujú medzi tlačidlami ("Page X / Y").
+
+Na domovskej stránke (HomeController) sa stránkuje 4 produkty, zoradené
+podľa celkového predaného množstva (popularity) zostupne.
+
+5.6 Základné filtrovanie
+
+Filtrovanie je dostupné na stránke /shop prostredníctvom panela Filters.
+Všetky filtre sú GET parametre, čo umožňuje kombinovanie, zdieľanie
+a záložkovanie výsledkov. Implementované filtre:
+
+  Kategória (category):
+    Klik na tlačidlo kategórie pridá parameter category do URL.
+    V kontroléri sa aplikuje: WHERE category = 'hodnota'.
+
+  Cena od – do (price_min, price_max):
+    Číselné vstupné polia. Ak sú vyplnené, aplikujú sa podmienky:
+    WHERE price >= price_min a/alebo WHERE price <= price_max.
+
+  Dostupnosť (stock):
+    Select box s hodnotami: "All", "In Stock", "Sold Out".
+    "instock" → WHERE stock > 0
+    "soldout" → WHERE stock <= 0
+
+  Zoradenie (sort):
+    Select box s hodnotami: "Default" (najnovšie), "Price: Low to High",
+    "Price: High to Low".
+    "price_asc"  → ORDER BY price ASC
+    "price_desc" → ORDER BY price DESC
+    Default      → ORDER BY created_at DESC (najnovšie produkty prvé)
+
+Všetky filtre je možné ľubovoľne kombinovať. Filtre je možné resetovať
+tlačidlom Reset, ktoré presmeruje na /shop bez parametrov.
+
+
+6. ADMINISTRÁTORSKÁ ČASŤ
+==========================
+
+6.1 Prihlásenie a odhlásenie administrátora
+
+Administrátor sa prihlasuje rovnakým formulárom ako bežný zákazník
+na adrese /login. Systém nerozlišuje prihlásenie rôznymi formulármi –
+odlíšenie prebieha výlučne na základe hodnoty is_admin = true v tabuľke
+users. Po prihlásení sa administrátorovi automaticky zobrazia ovládacie
+prvky pre správu produktov (tlačidlá Edit a Delete pri každom produkte,
+tlačidlo Add new product na stránke shopu).
+
+Odhlásenie funguje rovnako pre administrátora aj zákazníka – cez tlačidlo
+v hlavičke, ktoré odošle POST na /logout.
+
+Všetky trasy /admin/* sú chránené na úrovni backendu middlewarom
+"auth" (overuje prihlásenie) a "admin" (vlastný middleware IsAdmin,
+ktorý overuje is_admin = true). Neoprávnený prístup priamo cez URL
+vráti HTTP 403 Forbidden.
+
+6.2 Zoznam produktov
+
+Administrátor vidí zoznam všetkých produktov na štandardnej stránke
+shopu (/shop) rovnako ako zákazník, ale s pridanými administrátorskými
+prvkami pri každej produktovej kartičke – ikonou ceruzky (Edit) a ikonou
+koša (Delete). Tlačidlá sú pri bežnom zobrazení skryté a objavujú sa
+pri prechode myšou nad kartičkou produktu.
+
+6.3 Pridanie nového produktu
+
+Administrátor prejde na /admin/create (tlačidlo Add new product na
+stránke shopu). Formulár obsahuje tieto polia:
+
+  - Názov produktu (povinné)
+  - Popis (povinné)
+  - Cena v EUR (povinné, číselná hodnota > 0)
+  - Množstvo na sklade (povinné, číselná hodnota >= 0)
+  - Kategória – výberový zoznam (stone, exotic, citrus, pome, boxes)
+  - Merná jednotka – výberový zoznam (kg, pcs)
+  - Obrázky – možnosť nahrať viacero súborov naraz (min. 1, povinné)
+
+Po odoslaní (POST /admin/create) AdminController@create:
+  1. Zvaliduje všetky polia vrátane typu a veľkosti obrázkov.
+  2. Vygeneruje slug z názvu produktu (Str::slug).
+  3. Uloží produkt do tabuľky products.
+  4. Každý obrázok uloží na disk do storage/products/ a vytvorí
+     záznam v tabuľke product_images.
+  5. Presmeruje na stránku shopu.
+
+6.4 Úprava existujúceho produktu
+
+Administrátor klikne na ikonu ceruzky pri produkte. Načíta sa stránka
+/admin/edit/{slug} s formulárom predvyplneným aktuálnymi hodnotami.
+Formulár obsahuje rovnaké polia ako pri pridaní, plus zoznam
+existujúcich obrázkov produktu.
+
+Každý existujúci obrázok má tlačidlo na vymazanie, ktoré odošle
+DELETE požiadavku na /admin/delete-img/{id}. AdminController@deleteImg
+fyzicky vymaže súbor zo storage a odstráni záznam z databázy.
+Nové obrázky je možné pridať priamo v tomto formulári.
+
+Po odoslaní (PATCH /admin/edit/{slug}) AdminController@edit:
+  1. Zvaliduje polia (obrázky sú voliteľné – pridávajú sa k existujúcim).
+  2. Aktualizuje záznam produktu vrátane slug a URL.
+  3. Ak boli nahrané nové obrázky, uloží ich a vytvorí záznamy.
+  4. Presmeruje na stránku detailu produktu.
+
+6.5 Vymazanie produktu
+
+Administrátor klikne na ikonu koša pri produkte. Po potvrdení cez
+JavaScript dialóg (confirm) sa odošle DELETE požiadavka na
+/admin/delete/{slug}. AdminController@delete:
+  1. Načíta produkt so všetkými závislosťami (obrázky, položky objednávok).
+  2. Fyzicky vymaže každý obrázok zo storage.
+  3. Vymaže záznamy product_images z databázy.
+  4. Vymaže záznamy order_items (zachovanie referencnej integrity).
+  5. Vymaže samotný produkt z databázy.
+  6. Presmeruje na stránku shopu.
+
+
+7. SNÍMKY OBRAZOVIEK
+=====================
+
+Snímky obrazoviek sú priložené ako súbory v priečinku docs/screenshots/.
+
+  screenshot-homepage.png       – domovská stránka s populárnymi produktmi
+  screenshot-login.png          – prihlasovací formulár
+  screenshot-product.png        – detail produktu s galériou a formulárom
+  screenshot-cart.png           – nákupný košík s vloženým produktom
+  screenshot-shop.png           – výpis produktov s filtrami a stránkovaním
+  screenshot-admin-create.png   – administrátorský formulár – pridanie produktu
+  screenshot-admin-edit.png     – administrátorský formulár – úprava produktu

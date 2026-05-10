@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,10 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
 </head>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -100,24 +99,40 @@
                         {{ $product['unit'] }}</span>
                 </div>
 
-                <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                @if (session('error'))
                     <div
-                        class="flex w-full items-center justify-between rounded-full border border-[#E6E6E6] bg-white px-3 py-2 sm:w-35"
-                    >
-                        <button class="h-8 w-8 rounded-full hover:bg-[#F6F6F6]">−</button>
-                        <span class="text-sm font-semibold">1</span>
-                        <button class="h-8 w-8 rounded-full hover:bg-[#F6F6F6]">+</button>
+                        class="mb-4 py-3 text-sm text-red-700">
+                        {{ session('error') }}
                     </div>
+                @endif
 
-                    <button
-                        class="w-full rounded-full bg-[#2B662D] px-6 py-3 font-semibold text-white sm:w-auto"
-                    >
-                        Add to cart
-                    </button>
+                <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <form action="{{ route('cart.add.amount', $product) }}" method="POST"
+                        class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        @csrf
+
+                        <div
+                            class="flex w-full items-center justify-between rounded-full border border-[#E6E6E6] bg-white px-3 py-2 sm:w-35">
+                            <button type="button" id="decreaseQty"
+                                class="h-8 w-8 rounded-full hover:bg-[#F6F6F6]">−</button>
+
+                            <input id="quantity" name="quantity" type="number" min="1"
+                                value="1"
+                                class="w-12 border-0 bg-transparent text-center text-sm font-semibold outline-none" />
+
+                            <button type="button" id="increaseQty"
+                                class="h-8 w-8 rounded-full hover:bg-[#F6F6F6]">+</button>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full rounded-full bg-[#2B662D] px-6 py-3 font-semibold text-white sm:w-auto">
+                            Add to cart
+                        </button>
+                    </form>
 
                     <form action="{{ route('cart.add', $product) }}" method="POST">
                         @csrf
-                        <button type="submit">Order now</button>
+                        <button type="submit" class="cursor-pointer">Order now</button>
                     </form>
                 </div>
             </div>
@@ -125,4 +140,22 @@
     </main>
     <x-footer />
 </body>
+<script>
+    const qtyInput = document.getElementById('quantity');
+    const decreaseBtn = document.getElementById('decreaseQty');
+    const increaseBtn = document.getElementById('increaseQty');
+
+    decreaseBtn.addEventListener('click', () => {
+        let currentValue = parseInt(qtyInput.value) || 1;
+        if (currentValue > 1) {
+            qtyInput.value = currentValue - 1;
+        }
+    });
+
+    increaseBtn.addEventListener('click', () => {
+        let currentValue = parseInt(qtyInput.value) || 1;
+        qtyInput.value = currentValue + 1;
+    });
+</script>
+
 </html>

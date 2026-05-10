@@ -15,7 +15,7 @@
 <body class="font-[Manrope]">
     <x-header />
     <main>
-        <img src="{{ asset('phase1\templates\assets\img\baner.png') }}" alt="Banner"
+        <img src="{{ asset('storage/products/baner.png') }}" alt="Banner"
             class="w-full h-full object-cover" />
 
         <section class="container mx-auto py-5 px-3">
@@ -26,7 +26,7 @@
             <div id="productsGrid"
                 class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($products as $product)
-                    <x-product-card :product="$product" :admin='false' />
+                    <x-product-card :product="$product" :admin="auth()->check() && auth()->user()->isAdmin()" />
                 @endforeach
             </div>
         </section>

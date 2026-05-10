@@ -13,7 +13,7 @@ use App\Http\Controllers\ShopController;
 //     return view('welcome');
 // });
 
-Route::get('/home', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index']);
 // Route::get('/main', function () {
 //     return view('main');
 // });
@@ -24,6 +24,7 @@ Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/add-amount/{product}', [CartController::class, 'addAmount'])->name('cart.add.amount');
 Route::patch('/cart/item/{cartItem}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/item/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
 Route::patch('/cart/items/{item}/decrease', [CartController::class, 'decrease'])->name('cart.decrease');
@@ -41,15 +42,17 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/admin/create', [AdminController::class, 'showCreate'])->name('admin.create');
-Route::post('/admin/create', [AdminController::class, 'create'])->name('admin.create.store');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/create', [AdminController::class, 'showCreate'])->name('admin.create');
+    Route::post('/admin/create', [AdminController::class, 'create'])->name('admin.create.store');
 
-Route::get('/admin/edit/{slug}', [AdminController::class, 'showEdit'])->name('admin.edit');
-Route::patch('/admin/edit/{slug}', [AdminController::class, 'edit'])->name('admin.edit.store');
+    Route::get('/admin/edit/{slug}', [AdminController::class, 'showEdit'])->name('admin.edit');
+    Route::patch('/admin/edit/{slug}', [AdminController::class, 'edit'])->name('admin.edit.store');
 
-Route::delete('/admin/delete/{slug}', [AdminController::class, 'delete'])->name('admin.delete');
+    Route::delete('/admin/delete/{slug}', [AdminController::class, 'delete'])->name('admin.delete');
 
-Route::delete('/admin/delete-img/{id}', [AdminController::class, 'deleteImg'])->name('admin.delete.img');
+    Route::delete('/admin/delete-img/{id}', [AdminController::class, 'deleteImg'])->name('admin.delete.img');
+});
 
 //поиск
 Route::get('/search-suggestions', [ShopController::class, 'suggestions']);
