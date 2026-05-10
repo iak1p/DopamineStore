@@ -35,23 +35,23 @@ class CheckoutController extends Controller
             'street' => ['required', 'string', 'max:255'],
             'postal_code' => ['required', 'string', 'max:20'],
             'country' => ['required', 'string', 'max:100'],
-            'create_account' => ['required', 'boolean'],
             'note' => ['nullable', 'string'],
         ];
 
         if (!Auth::id()) {
             $rules['create_account'] = ['required', 'boolean'];
+
+            if ($request->input('create_account') == '1') {
+                $rules['password'] = ['required', 'string', 'min:1', 'confirmed'];
+                $rules['email'] = ['required', 'email', 'max:255', 'unique:users,email'];
+            }
         }
 
-       if (!Auth::id() && $request->input('create_account') == '1') {
-            $rules['password'] = ['required', 'string', 'min:1', 'confirmed'];
-            $rules['email'] = ['required', 'email', 'max:255', 'unique:users,email'];
-        }
         $validated = $request->validate($rules);
 
         $sessionId = session()->getId();
 
-        if ($validated['create_account'] == '1' && !Auth::id()) {
+        if (($validated['create_account'] ?? '0') == '1' && !Auth::id()) {
             $user = User::create([
                 'name' => $validated['full_name'],
                 'email' => $validated['email'],
@@ -72,7 +72,7 @@ class CheckoutController extends Controller
                 'street' => $validated['street'],
                 'postal_code' => $validated['postal_code'],
                 'country' => $validated['country'],
-                'create_account' => $validated['create_account'],
+                'create_account' => $validated['create_account'] ?? '0',
                 'note' => $validated['note'] ?? null,
             ]
         ]);

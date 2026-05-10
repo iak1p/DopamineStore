@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,9 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:1', 'confirmed'],
         ]);
 
+        // Capture before Auth::login() internally calls session->migrate(true)
+        $sessionId = session()->getId();
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -29,6 +33,8 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+
+        $this->mergeGuestCart($user, $sessionId);
 
         return redirect()->route('shop');
     }
@@ -45,6 +51,9 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        // Capture before Auth::attempt() internally calls session->migrate(true)
+        $sessionId = session()->getId();
+
         if (!Auth::attempt($validated)) {
             return back()->withErrors([
                 'email' => 'Invalid email or password.',
@@ -52,6 +61,8 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
+
+        $this->mergeGuestCart(Auth::user(), $sessionId);
 
         return redirect()->route('shop');
     }
@@ -64,5 +75,37 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('shop');
+    }
+
+    private function mergeGuestCart(User $user, string $sessionId): void
+    {
+        $guestCart = Cart::with('items')
+            ->where('session_id', $sessionId)
+            ->first();
+
+        if (!$guestCart || $guestCart->items->isEmpty()) {
+            return;
+        }
+
+        $userCart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+        foreach ($guestCart->items as $guestItem) {
+            $existingItem = $userCart->items()
+                ->where('product_id', $guestItem->product_id)
+                ->first();
+
+            if ($existingItem) {
+                $existingItem->increment('quantity', $guestItem->quantity);
+            } else {
+                $userCart->items()->create([
+                    'product_id' => $guestItem->product_id,
+                    'quantity' => $guestItem->quantity,
+                    'unit_price' => $guestItem->unit_price,
+                ]);
+            }
+        }
+
+        $guestCart->items()->delete();
+        $guestCart->delete();
     }
 }
