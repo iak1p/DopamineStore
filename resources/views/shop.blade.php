@@ -55,10 +55,14 @@
 
                 <div class="flex items-center gap-2">
 
-                    <a href="{{ route('admin.create') }}"
-                        class="flex items-center hover:bg-[#F7F7F7] transition gap-2 rounded-xl bg-white px-4 py-2 text-xs font-medium text-[#222] border border-[#E6E6E6] cursor-pointer">
-                        Add new product
-                    </a>
+                    @auth
+                        @if (auth()->user()->isAdmin())
+                            <a href="{{ route('admin.create') }}"
+                                class="flex items-center hover:bg-[#F7F7F7] transition gap-2 rounded-xl bg-white px-4 py-2 text-xs font-medium text-[#222] border border-[#E6E6E6] cursor-pointer">
+                                Add new product
+                            </a>
+                        @endif
+                    @endauth
 
                     <button id="filtersBtn" type="button"
                         class="flex items-center hover:bg-[#F7F7F7] transition gap-2 rounded-xl bg-white px-4 py-2 text-xs font-medium text-[#222] border border-[#E6E6E6] cursor-pointer">
@@ -150,7 +154,7 @@
                 <div id="productsGrid"
                     class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($products as $product)
-                        <x-product-card :product="$product" :admin='true' />
+                        <x-product-card :product="$product" :admin="auth()->check() && auth()->user()->isAdmin()" />
                     @endforeach
                 </div>
             @endif

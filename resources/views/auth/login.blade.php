@@ -93,10 +93,10 @@
             </a>
         </p>
 
-        <p class="text-sm text-gray-600">
+        {{-- <p class="text-sm text-gray-600">
             admin?
             <a href="#" class="font-medium text-[#2B662D] hover:underline"> admin </a>
-        </p>
+        </p> --}}
     </main>
 </body>
 </html>

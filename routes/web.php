@@ -42,15 +42,17 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/admin/create', [AdminController::class, 'showCreate'])->name('admin.create');
-Route::post('/admin/create', [AdminController::class, 'create'])->name('admin.create.store');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/create', [AdminController::class, 'showCreate'])->name('admin.create');
+    Route::post('/admin/create', [AdminController::class, 'create'])->name('admin.create.store');
 
-Route::get('/admin/edit/{slug}', [AdminController::class, 'showEdit'])->name('admin.edit');
-Route::patch('/admin/edit/{slug}', [AdminController::class, 'edit'])->name('admin.edit.store');
+    Route::get('/admin/edit/{slug}', [AdminController::class, 'showEdit'])->name('admin.edit');
+    Route::patch('/admin/edit/{slug}', [AdminController::class, 'edit'])->name('admin.edit.store');
 
-Route::delete('/admin/delete/{slug}', [AdminController::class, 'delete'])->name('admin.delete');
+    Route::delete('/admin/delete/{slug}', [AdminController::class, 'delete'])->name('admin.delete');
 
-Route::delete('/admin/delete-img/{id}', [AdminController::class, 'deleteImg'])->name('admin.delete.img');
+    Route::delete('/admin/delete-img/{id}', [AdminController::class, 'deleteImg'])->name('admin.delete.img');
+});
 
 //поиск
 Route::get('/search-suggestions', [ShopController::class, 'suggestions']);
